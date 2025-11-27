@@ -4,6 +4,7 @@ Demonstrates blockchain consensus with multiple validators
 """
 import sys
 import os
+from contextlib import contextmanager
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
 from crypto.keys import KeyPair
@@ -11,6 +12,40 @@ from network.network import UnreliableNetwork
 from node import BlockchainNode, Logger
 import time
 import json
+
+
+class TeeStream:
+    """Duplicate writes to multiple streams (e.g., console + file)."""
+    def __init__(self, *streams):
+        self.streams = streams
+    
+    def write(self, data):
+        for stream in self.streams:
+            stream.write(data)
+            stream.flush()
+    
+    def flush(self):
+        for stream in self.streams:
+            stream.flush()
+
+
+@contextmanager
+def tee_output_to_file(log_path: str):
+    """Context manager that mirrors stdout/stderr to a file."""
+    os.makedirs(os.path.dirname(log_path), exist_ok=True)
+    original_stdout = sys.stdout
+    original_stderr = sys.stderr
+    
+    with open(log_path, "w", encoding="utf-8") as log_file:
+        stdout_tee = TeeStream(original_stdout, log_file)
+        stderr_tee = TeeStream(original_stderr, log_file)
+        try:
+            sys.stdout = stdout_tee
+            sys.stderr = stderr_tee
+            yield log_file
+        finally:
+            sys.stdout = original_stdout
+            sys.stderr = original_stderr
 
 def run_simulation(num_validators=4, num_blocks=3, num_txs_per_block=2, 
                    network_delay=(0.01, 0.05), loss_rate=0.1, verbose=True):
@@ -177,31 +212,36 @@ def run_simulation(num_validators=4, num_blocks=3, num_txs_per_block=2,
     return nodes, all_same
 
 if __name__ == "__main__":
-    # Run simulation
-    nodes, success = run_simulation(
-        num_validators=4,
-        num_blocks=3,
-        num_txs_per_block=2,
-        network_delay=(0.01, 0.05),
-        loss_rate=0.1,
-        verbose=True
-    )
-    
-    # Save logs
-    all_logs = []
-    for node in nodes:
-        all_logs.extend(node.get_logs())
-    
-    all_logs.sort(key=lambda x: x['timestamp'])
-    
-    with open('logs/simulation_log.json', 'w') as f:
-        json.dump(all_logs, f, indent=2)
-    
-    print(f"\nLogs saved to logs/simulation_log.json")
-    
-    if success:
-        print("\nTest PASSED")
-        sys.exit(0)
-    else:
-        print("\nTest FAILED")
-        sys.exit(1)
+    log_txt_path = os.path.join("logs", "run_simulation_output.txt")
+    with tee_output_to_file(log_txt_path):
+        print(f"[run_simulation] Writing console output to {log_txt_path}")
+        
+        # Run simulation
+        nodes, success = run_simulation(
+            num_validators=4,
+            num_blocks=3,
+            num_txs_per_block=2,
+            network_delay=(0.01, 0.05),
+            loss_rate=0.1,
+            verbose=True
+        )
+        
+        # Save logs
+        all_logs = []
+        for node in nodes:
+            all_logs.extend(node.get_logs())
+        
+        all_logs.sort(key=lambda x: x['timestamp'])
+        
+        with open('logs/simulation_log.json', 'w') as f:
+            json.dump(all_logs, f, indent=2)
+        
+        print(f"\nLogs saved to logs/simulation_log.json")
+        print(f"Text output saved to {log_txt_path}")
+        
+        if success:
+            print("\nTest PASSED")
+            sys.exit(0)
+        else:
+            print("\nTest FAILED")
+            sys.exit(1)

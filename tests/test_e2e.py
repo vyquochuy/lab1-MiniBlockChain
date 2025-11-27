@@ -197,8 +197,11 @@ def test_deterministic_replay():
         import random
         random.seed(seed)
         
+        def next_seed():
+            return random.getrandbits(256).to_bytes(32, byteorder="big")
+        
         chain_id = "test-chain"
-        validators = [KeyPair() for _ in range(3)]
+        validators = [KeyPair.from_seed(next_seed()) for _ in range(3)]
         validator_addresses = [v.get_address() for v in validators]
         
         logger = Logger("NETWORK", False)

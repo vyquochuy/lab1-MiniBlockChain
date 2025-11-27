@@ -167,7 +167,7 @@ def test_chain_id_separation():
     assert not is_valid, \
         "Signature was reused across different chains"
     
-    print("✅ PASSED: Chain ID separation prevents cross-chain replay")
+    print("PASSED: Chain ID separation prevents cross-chain replay")
     return True
 
 def test_serialization():

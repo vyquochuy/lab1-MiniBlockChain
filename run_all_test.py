@@ -6,10 +6,45 @@ import sys
 import os
 import time
 import json
+from contextlib import contextmanager
 
 # Add src to path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'tests'))
+
+
+class TeeStream:
+    """Duplicate writes to multiple streams."""
+    def __init__(self, *streams):
+        self.streams = streams
+    
+    def write(self, data):
+        for stream in self.streams:
+            stream.write(data)
+            stream.flush()
+    
+    def flush(self):
+        for stream in self.streams:
+            stream.flush()
+
+
+@contextmanager
+def tee_output_to_file(log_path: str):
+    """Mirror stdout/stderr to file while keeping console output."""
+    os.makedirs(os.path.dirname(log_path), exist_ok=True)
+    original_stdout = sys.stdout
+    original_stderr = sys.stderr
+    
+    with open(log_path, "w", encoding="utf-8") as log_file:
+        stdout_tee = TeeStream(original_stdout, log_file)
+        stderr_tee = TeeStream(original_stderr, log_file)
+        try:
+            sys.stdout = stdout_tee
+            sys.stderr = stderr_tee
+            yield log_file
+        finally:
+            sys.stdout = original_stdout
+            sys.stderr = original_stderr
 
 def run_test_suite(test_module_name, test_function_name):
     """Run a test suite and return results"""
@@ -135,5 +170,9 @@ def main():
         return 1
 
 if __name__ == "__main__":
-    exit_code = main()
-    sys.exit(exit_code)
+    log_txt_path = os.path.join("logs", "run_all_test_output.txt")
+    with tee_output_to_file(log_txt_path):
+        print(f"[run_all_test] Writing console output to {log_txt_path}")
+        exit_code = main()
+        print(f"\nText output saved to {log_txt_path}")
+        sys.exit(exit_code)

@@ -53,7 +53,7 @@ class UnreliableNetwork:
         if self.enable_delays:
             delay = random.uniform(self.delay_range[0], self.delay_range[1])
         else:
-            delay = 0.001
+            delay = 0.0
         
         delivery_time = current_time + delay
         
@@ -97,23 +97,37 @@ class UnreliableNetwork:
             if receiver != sender:  # Don't send to self
                 self.send_message(sender, receiver, message_type, payload)
     
-    def deliver_ready_messages(self) -> List[NetworkMessage]:
-        """Deliver all messages that are ready (past delivery time)"""
+    def deliver_ready_messages(self, receiver: str = None) -> List[NetworkMessage]:
+        """
+        Deliver messages ready to be consumed.
+        
+        Args:
+            receiver: if provided, only deliver messages addressed to this receiver.
+                      Ready messages for other receivers stay queued.
+        """
         current_time = time.time()
         ready_messages = []
+        ready_for_others = []
         remaining_messages = []
         
         for msg in self.message_queue:
             if msg.delivery_time <= current_time:
+                if receiver is not None and msg.receiver != receiver:
+                    ready_for_others.append(msg)
+                    continue
+                
                 ready_messages.append(msg)
                 self.delivered_count += 1
-                self.logger.log("NETWORK",
-                               f"← DELIVERED {msg.message_type} to {msg.receiver[:8]}... "
-                               f"(latency: {current_time - msg.send_time:.3f}s)")
+                self.logger.log(
+                    "NETWORK",
+                    f"← DELIVERED {msg.message_type} to {msg.receiver[:8]}... "
+                    f"(latency: {current_time - msg.send_time:.3f}s)"
+                )
             else:
                 remaining_messages.append(msg)
         
-        self.message_queue = remaining_messages
+        # Keep messages that are ready but destined for other receivers
+        self.message_queue = remaining_messages + ready_for_others
         
         # Messages may arrive out of order
         random.shuffle(ready_messages)

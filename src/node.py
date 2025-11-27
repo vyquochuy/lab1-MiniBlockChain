@@ -140,7 +140,7 @@ class BlockchainNode:
     
     def process_network_messages(self):
         """Process incoming network messages"""
-        messages = self.network.deliver_ready_messages()
+        messages = self.network.deliver_ready_messages(receiver=self.address)
         
         for msg in messages:
             if msg.receiver != self.address:
