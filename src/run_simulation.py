@@ -47,8 +47,8 @@ def tee_output_to_file(log_path: str):
             sys.stdout = original_stdout
             sys.stderr = original_stderr
 
-def run_simulation(num_validators=10, num_blocks=3, num_txs_per_block=2, 
-                   network_delay=(0.01, 0.05), loss_rate=0.1, verbose=True):
+def run_simulation(num_validators, num_blocks, num_txs_per_block, 
+                   network_delay, loss_rate, verbose):
     """
     Run blockchain simulation with multiple validators
     

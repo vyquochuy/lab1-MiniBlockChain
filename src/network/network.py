@@ -32,7 +32,6 @@ class UnreliableNetwork:
         self.duplicate_rate = duplicate_rate
         self.enable_delays = enable_delays
         
-        # Simulation time (không dùng time.time() nữa)
         self.simulation_time = 0.0
         
         # Message queue - messages chờ đến delivery_time
@@ -44,12 +43,77 @@ class UnreliableNetwork:
         self.delivered_count = 0
         self.dropped_count = 0
         self.duplicated_count = 0
+        self.rate_limited_drops = 0
+        
+        self.max_sends_per_second = 100  # Giới hạn 100 messages/second
+        self.send_rate_limit = {}  # sender -> (count, window_start_time)
+        self.blocked_peers = set()  # Set of blocked peer addresses
+        self.block_duration = 5.0  # Block peer for 5 seconds
+        self.peer_block_until = {}  # peer -> unblock_time
+    
+    def _check_rate_limit(self, sender: str) -> bool:
+        """
+        Check if sender exceeds rate limit.
+        Returns True if allowed, False if blocked.
+        """
+        current_time = self.simulation_time
+        
+        # Check if peer is currently blocked
+        if sender in self.peer_block_until:
+            if current_time < self.peer_block_until[sender]:
+                # Still blocked
+                self.logger.log("NETWORK", 
+                            f"BLOCKED peer {sender[:8]}... (rate limit)")
+                # Count this as a rate-limited drop
+                self.rate_limited_drops += 1
+                return False
+            else:
+                # Unblock peer
+                del self.peer_block_until[sender]
+                self.blocked_peers.discard(sender)
+                self.logger.log("NETWORK", 
+                            f"UNBLOCKED peer {sender[:8]}...")
+        
+        # Initialize rate limit tracking for new sender
+        if sender not in self.send_rate_limit:
+            self.send_rate_limit[sender] = (1, current_time)
+            return True
+        
+        count, window_start = self.send_rate_limit[sender]
+        
+        # Reset window if more than 1 second has passed
+        if current_time - window_start > 1.0:
+            self.send_rate_limit[sender] = (1, current_time)
+            return True
+        
+        # Check if sender exceeds limit
+        if count >= self.max_sends_per_second:
+            # Block this peer temporarily
+            self.blocked_peers.add(sender)
+            self.peer_block_until[sender] = current_time + self.block_duration
+            
+            self.logger.log("NETWORK", 
+                        f"RATE LIMIT exceeded by {sender[:8]}... "
+                        f"(sent {count} msgs in 1s). Blocked for {self.block_duration}s")
+            # Count this as a rate-limited drop
+            self.rate_limited_drops += 1
+            return False
+        
+        # Increment counter
+        self.send_rate_limit[sender] = (count + 1, window_start)
+        return True
     
     def send_message(self, sender: str, receiver: str, 
                      message_type: str, payload: Any):
         """Send a message through the unreliable network"""
         # Dùng simulation time thay vì time.time()
         send_time = self.simulation_time
+        
+        # Check rate limit
+        if not self._check_rate_limit(sender):
+            # increment general dropped count as well
+            self.dropped_count += 1
+            return
         
         # Simulate packet loss
         if random.random() < self.loss_rate:
@@ -178,13 +242,18 @@ class UnreliableNetwork:
     def get_stats(self):
         """Get network statistics"""
         total_inbox = sum(len(msgs) for msgs in self.inboxes.values())
+        rate_limited = self.rate_limited_drops
         return {
             "delivered": self.delivered_count,
             "dropped": self.dropped_count,
             "duplicated": self.duplicated_count,
             "pending": len(self.message_queue),
             "in_inboxes": total_inbox,
-            "simulation_time": self.simulation_time
+            "simulation_time": self.simulation_time,
+            "blocked_peers": len(self.blocked_peers),
+            # Expose both canonical and legacy keys for compatibility
+            "rate_limited_drops": rate_limited,
+            "rate_limit_drops": rate_limited,
         }
     
     def get_simulation_time(self) -> float:

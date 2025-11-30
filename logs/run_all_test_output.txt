@@ -162,7 +162,7 @@ TEST: Message Delays
 PASSED: Messages are properly delayed
 
 TEST: Packet Loss
-PASSED: Packet loss rate: 55.00%
+PASSED: Packet loss rate: 53.00%
 
 TEST: Message Duplicates
 PASSED: Message duplication works
@@ -171,15 +171,52 @@ TEST: Message Broadcasting
 PASSED: Broadcasting works correctly
 
 TEST: Message Reordering
-   Messages were reordered: [9, 3, 5, 1, 2]...
+   Messages were reordered: [5, 6, 9, 2, 7]...
 PASSED: Message reordering can occur
 
 TEST: Network Statistics
-   Delivered: 45, Dropped: 9, Duplicated: 4
+   Delivered: 43, Dropped: 9, Duplicated: 2
 PASSED: Network statistics tracked correctly
 
 TEST: Zero Delay Mode
 PASSED: Zero-delay mode works for testing
+
+TEST: Rate Limiting - Blocking Excessive Senders
+   Dropped 50 messages due to rate limit
+   Alice blocked: {'alice'}
+PASSED: Rate limiting blocks excessive senders
+
+TEST: Rate Limiting - Peer Unblocking After Timeout
+   Alice was blocked until time: 5.00
+   Current simulation time: 6.01
+PASSED: Blocked peers are unblocked after timeout
+
+TEST: Rate Limiting - Per-Sender Enforcement
+   Alice blocked: Yes
+   Bob blocked: No
+   Bob's messages delivered: 50/50
+PASSED: Rate limiting is enforced per-sender
+
+TEST: Rate Limiting - Statistics Tracking
+   Blocked peers: 1
+   Rate limited drops: 50
+   Total dropped: 50
+PASSED: Rate limiting statistics tracked correctly
+
+TEST: Header/Body Separation - Basic Functionality
+   Leader has header/body separation structures
+   Pending block bodies: 1
+PASSED: Basic header/body separation structures exist
+
+TEST: Header/Body Separation - Message Type Handling
+   Node has _handle_block_header()
+   Node has _handle_block_body_request()
+   Node has _handle_block_body()
+PASSED: Header/body message handlers exist
+
+TEST: Header/Body Separation - Backward Compatibility
+   Blocks finalized: 1
+PASSED: Backward compatibility maintained
 
 ================================================================================
 NETWORK TEST SUMMARY
@@ -192,8 +229,19 @@ PASSED: test_broadcast
 PASSED: test_message_reordering
 PASSED: test_network_stats
 PASSED: test_zero_delay_mode
+PASSED: test_rate_limiting
+PASSED: test_rate_limit_peer_unblocking
+PASSED: test_rate_limit_multiple_senders
+PASSED: test_rate_limit_stats
+PASSED: test_header_body_separation_basic
+PASSED: test_header_body_message_types
+PASSED: test_header_body_backward_compatibility
 
 ALL NETWORK TESTS PASSED!
+Total tests: 15
+  - Original tests: 8
+  - Rate limiting tests: 4
+  - Header/Body tests: 3
 
 ================================================================================
 Running test_e2e
@@ -240,21 +288,14 @@ FINAL TEST REPORT
 PASSED - test_crypto          (0.02s)
 PASSED - test_execution       (0.01s)
 PASSED - test_consensus       (0.01s)
-PASSED - test_network         (0.00s)
-PASSED - test_e2e             (0.09s)
+PASSED - test_network         (0.02s)
+PASSED - test_e2e             (0.08s)
 
 ================================================================================
-Total Duration: 0.21s
+Total Duration: 0.22s
 ================================================================================
 
 ALL TEST SUITES PASSED!
-
-The blockchain implementation meets all requirements:
-   • Cryptography: Key management, signatures, domain separation
-   • Execution: State management, transactions, determinism
-   • Consensus: Two-phase voting, finality guarantees
-   • Network: Unreliable network simulation
-   • End-to-End: Safety, liveness, fault tolerance
 
 Test report saved to logs/test_report.json
 
