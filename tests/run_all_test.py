@@ -129,12 +129,6 @@ def main():
     
     if all_passed:
         print("\nALL TEST SUITES PASSED!")
-        print("\nThe blockchain implementation meets all requirements:")
-        print("   • Cryptography: Key management, signatures, domain separation")
-        print("   • Execution: State management, transactions, determinism")
-        print("   • Consensus: Two-phase voting, finality guarantees")
-        print("   • Network: Unreliable network simulation")
-        print("   • End-to-End: Safety, liveness, fault tolerance")
         
         # Save report
         report = {
