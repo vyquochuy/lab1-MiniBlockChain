@@ -138,22 +138,6 @@ Với cấu hình mặc định (4 validators):
 - **Fault Tolerance**: Tolerates 1 Byzantine validator
 - **Network Overhead**: ~100-200 messages per block
 
-## Troubleshooting
-
-### Lỗi: ModuleNotFoundError
-```bash
-# Đảm bảo bạn đang ở đúng thư mục
-cd src
-python run_simulation.py
-
-# Hoặc thêm src vào PYTHONPATH
-export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
-```
-
-### Lỗi: cryptography not found
-```bash
-pip install --upgrade cryptography
-```
 
 ## Tài liệu tham khảo
 
