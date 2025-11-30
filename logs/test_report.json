@@ -1,0 +1,32 @@
+{
+  "timestamp": 1764238491.0888746,
+  "total_duration": 3.624810218811035,
+  "all_passed": true,
+  "results": [
+    {
+      "suite": "test_crypto",
+      "passed": true,
+      "duration": 0.017200708389282227
+    },
+    {
+      "suite": "test_execution",
+      "passed": true,
+      "duration": 0.008756875991821289
+    },
+    {
+      "suite": "test_consensus",
+      "passed": true,
+      "duration": 0.006967306137084961
+    },
+    {
+      "suite": "test_network",
+      "passed": true,
+      "duration": 0.3188295364379883
+    },
+    {
+      "suite": "test_e2e",
+      "passed": true,
+      "duration": 3.1608948707580566
+    }
+  ]
+}

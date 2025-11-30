@@ -1,0 +1,261 @@
+[run_all_test] Writing console output to logs\run_all_test_output.txt
+
+================================================================================
+BLOCKCHAIN LAYER 1 - COMPREHENSIVE TEST SUITE
+================================================================================
+
+
+================================================================================
+Running test_crypto
+================================================================================
+
+================================================================================
+RUNNING CRYPTOGRAPHY UNIT TESTS
+================================================================================
+
+TEST: KeyPair Generation
+PASSED: KeyPair generation works correctly
+
+TEST: Signature Verification
+PASSED: Signature verification works correctly
+
+TEST: Domain Separation
+PASSED: Domain separation prevents signature reuse
+
+TEST: Deterministic Hashing
+PASSED: Hashing is deterministic and collision-resistant
+
+TEST: Chain ID Separation
+PASSED: Chain ID separation prevents cross-chain replay
+
+TEST: Message Serialization
+PASSED: Message serialization preserves integrity
+
+TEST: Tamper Detection
+PASSED: Data tampering is detected
+
+================================================================================
+CRYPTOGRAPHY TEST SUMMARY
+================================================================================
+PASSED: test_keypair_generation
+PASSED: test_signature_verification
+PASSED: test_domain_separation
+PASSED: test_deterministic_hashing
+PASSED: test_chain_id_separation
+PASSED: test_serialization
+PASSED: test_tamper_detection
+
+ALL CRYPTOGRAPHY TESTS PASSED!
+
+================================================================================
+Running test_execution
+================================================================================
+
+================================================================================
+RUNNING EXECUTION UNIT TESTS
+================================================================================
+
+TEST: State Operations
+PASSED: State operations work correctly
+
+TEST: Balance Operations
+PASSED: Balance operations work correctly
+
+TEST: State Hash Determinism
+PASSED: State hashing is deterministic
+
+TEST: Transaction Creation
+PASSED: Transaction creation works correctly
+
+TEST: Transaction Nonce (Replay Protection)
+PASSED: Nonce prevents replay attacks
+
+TEST: Transaction Signature Validation
+PASSED: Invalid signatures are rejected
+
+TEST: Executor Determinism
+PASSED: Executor is deterministic
+
+TEST: Insufficient Balance Check
+PASSED: Insufficient balance is checked
+
+TEST: State Isolation
+PASSED: State copies are isolated
+
+TEST: Transaction Ordering
+PASSED: Transaction ordering is respected
+
+================================================================================
+EXECUTION TEST SUMMARY
+================================================================================
+PASSED: test_state_operations
+PASSED: test_balance_operations
+PASSED: test_state_hash_determinism
+PASSED: test_transaction_creation
+PASSED: test_transaction_nonce
+PASSED: test_transaction_signature_validation
+PASSED: test_executor_determinism
+PASSED: test_insufficient_balance
+PASSED: test_state_isolation
+PASSED: test_transaction_ordering
+
+ALL EXECUTION TESTS PASSED!
+
+================================================================================
+Running test_consensus
+================================================================================
+
+================================================================================
+RUNNING CONSENSUS UNIT TESTS
+================================================================================
+
+TEST: Vote Creation and Verification
+PASSED: Vote creation and verification works
+
+TEST: Vote Collector
+PASSED: Vote collector tracks majorities correctly
+
+TEST: Duplicate Vote Rejection
+PASSED: Duplicate votes are rejected
+
+TEST: Block Header Hash Consistency
+PASSED: Block header hashing is consistent
+
+TEST: Block Serialization
+PASSED: Block serialization preserves data
+
+TEST: Genesis Block Creation
+PASSED: Genesis block created correctly
+
+TEST: Two-Phase Voting Process
+PASSED: Two-phase voting process works correctly
+
+TEST: Conflicting Votes
+PASSED: Conflicting votes are tracked separately
+
+================================================================================
+CONSENSUS TEST SUMMARY
+================================================================================
+PASSED: test_vote_creation_and_verification
+PASSED: test_vote_collector
+PASSED: test_duplicate_vote_rejection
+PASSED: test_block_header_hash
+PASSED: test_block_serialization
+PASSED: test_genesis_block_creation
+PASSED: test_two_phase_voting
+PASSED: test_conflicting_votes
+
+ALL CONSENSUS TESTS PASSED!
+
+================================================================================
+Running test_network
+================================================================================
+
+================================================================================
+RUNNING NETWORK UNIT TESTS
+================================================================================
+
+TEST: Basic Message Delivery
+PASSED: Messages are delivered correctly
+
+TEST: Message Delays
+PASSED: Messages are properly delayed
+
+TEST: Packet Loss
+PASSED: Packet loss rate: 56.00%
+
+TEST: Message Duplicates
+PASSED: Message duplication works
+
+TEST: Message Broadcasting
+PASSED: Broadcasting works correctly
+
+TEST: Message Reordering
+   Messages were reordered: [3, 7, 2, 4, 8]...
+PASSED: Message reordering can occur
+
+TEST: Network Statistics
+   Delivered: 43, Dropped: 12, Duplicated: 5
+PASSED: Network statistics tracked correctly
+
+TEST: Zero Delay Mode
+PASSED: Zero-delay mode works for testing
+
+================================================================================
+NETWORK TEST SUMMARY
+================================================================================
+PASSED: test_message_delivery
+PASSED: test_message_delays
+PASSED: test_packet_loss
+PASSED: test_message_duplicates
+PASSED: test_broadcast
+PASSED: test_message_reordering
+PASSED: test_network_stats
+PASSED: test_zero_delay_mode
+
+ALL NETWORK TESTS PASSED!
+
+================================================================================
+Running test_e2e
+================================================================================
+
+================================================================================
+RUNNING END-TO-END TESTS
+================================================================================
+
+================================================================================
+TEST: Single Block Finalization
+================================================================================
+PASSED: Single block finalized correctly
+
+================================================================================
+TEST: No Double Finalization (Safety)
+================================================================================
+PASSED: No double finalization detected (Safety guaranteed)
+
+================================================================================
+TEST: Invalid Signature Rejection
+================================================================================
+PASSED: Invalid signatures rejected
+
+================================================================================
+TEST: Deterministic Replay
+================================================================================
+PASSED: Deterministic replay produces identical results
+
+================================================================================
+TEST SUMMARY
+================================================================================
+PASSED: test_single_block_finalization
+PASSED: test_no_double_finalization
+PASSED: test_invalid_signature_rejection
+PASSED: test_deterministic_replay
+
+ALL TESTS PASSED!
+
+================================================================================
+FINAL TEST REPORT
+================================================================================
+
+PASSED - test_crypto          (0.02s)
+PASSED - test_execution       (0.01s)
+PASSED - test_consensus       (0.01s)
+PASSED - test_network         (0.32s)
+PASSED - test_e2e             (3.16s)
+
+================================================================================
+Total Duration: 3.62s
+================================================================================
+
+ALL TEST SUITES PASSED!
+
+The blockchain implementation meets all requirements:
+   • Cryptography: Key management, signatures, domain separation
+   • Execution: State management, transactions, determinism
+   • Consensus: Two-phase voting, finality guarantees
+   • Network: Unreliable network simulation
+   • End-to-End: Safety, liveness, fault tolerance
+
+Test report saved to logs/test_report.json
+
+Text output saved to logs\run_all_test_output.txt

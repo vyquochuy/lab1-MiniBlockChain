@@ -1,1 +1,23 @@
-{}
+{
+    "chain_id": "minimal-l1-chain",
+    "consensus": {
+      "block_time_target_ms": 1000,
+      "max_block_size": 1000,
+      "finality_threshold": 0.67
+    },
+    "network": {
+      "min_delay_ms": 10,
+      "max_delay_ms": 100,
+      "packet_loss_rate": 0.1,
+      "duplicate_rate": 0.05
+    },
+    "validators": {
+      "count": 4,
+      "initial_balance": 1000
+    },
+    "simulation": {
+      "num_blocks": 5,
+      "transactions_per_block": 3,
+      "max_iterations": 1000
+    }
+  }
