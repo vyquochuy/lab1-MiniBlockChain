@@ -2,20 +2,20 @@
 Main Node Implementation
 Integrates all layers: crypto, network, consensus, execution
 """
-import sys
 import os
-sys.path.append(os.path.dirname(__file__))
+import sys
+import time
 
 from crypto.keys import KeyPair
+from consensus.vote import Vote
+from typing import List, Dict, Any
+from consensus.block import BlockProposal
+from execution.transaction import Transaction
 from network.network import UnreliableNetwork
 from network.message import MessageType, Message
 from consensus.consensus import ConsensusEngine
-from consensus.block import BlockProposal
-from consensus.vote import Vote
-from execution.transaction import Transaction
-from typing import List, Dict, Any
-import time
 
+sys.path.append(os.path.dirname(__file__))
 class Logger:
     """Simple logger for debugging and testing"""
     
@@ -138,8 +138,56 @@ class BlockchainNode:
             # Clear processed transactions
             self.tx_pool = []
     
+    def tick(self):
+        """
+        Xử lý một tick của node - tự động xử lý tất cả events.
+        """
+        # 1. Xử lý network messages từ inbox
+        messages = self.network.get_messages(self.address)
+        
+        for msg in messages:
+            if msg.receiver != self.address:
+                continue
+            
+            msg_type = msg.message_type
+            payload = msg.payload
+            
+            if msg_type == "BLOCK_PROPOSAL":
+                proposal = BlockProposal.from_dict(payload)
+                self.consensus.receive_proposal(proposal)
+                
+                # Broadcast our prevote if we created one
+                height = proposal.block.header.height
+                self._broadcast_votes_for_height(height)
+            
+            elif msg_type == "VOTE":
+                vote = Vote.from_dict(payload)
+                
+                # Check for duplicate
+                vote_id = (vote.vote_type.value, vote.height, 
+                          vote.block_hash, vote.validator_address)
+                if vote_id in self.sent_votes:
+                    continue  # Already processed this vote
+                
+                self.consensus.receive_vote(vote)
+                
+                # Check if we should send precommit
+                height = vote.height
+                self._broadcast_votes_for_height(height)
+            
+            elif msg_type == "TRANSACTION":
+                tx = Transaction.from_dict(payload)
+                if tx.verify() and tx not in self.tx_pool:
+                    self.tx_pool.append(tx)
+        
+        # 2. Xử lý consensus events (propose block nếu là leader)
+        self.propose_block_if_leader()
+    
     def process_network_messages(self):
-        """Process incoming network messages"""
+        """
+        DEPRECATED: Dùng tick() thay vì method này.
+        Giữ lại để backward compatibility.
+        """
         messages = self.network.deliver_ready_messages(receiver=self.address)
         
         for msg in messages:

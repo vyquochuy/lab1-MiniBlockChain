@@ -61,10 +61,12 @@ def test_single_block_finalization():
     
     # Run consensus
     for _ in range(100):
+        # Network tick: advance time và deliver messages
+        network.tick(0.01)
+        
+        # Node tick: xử lý messages và events
         for node in nodes:
-            node.propose_block_if_leader()
-            node.process_network_messages()
-        time.sleep(0.01)
+            node.tick()
     
     # Verify
     finalized_count = len(nodes[0].get_blockchain())
@@ -125,10 +127,12 @@ def test_no_double_finalization():
     
     # Run consensus for multiple blocks
     for _ in range(200):
+        # Network tick: advance time và deliver messages
+        network.tick(0.01)
+        
+        # Node tick: xử lý messages và events
         for node in nodes:
-            node.propose_block_if_leader()
-            node.process_network_messages()
-        time.sleep(0.01)
+            node.tick()
     
     # Check that all nodes have same blocks at each height
     for height in range(min(len(node.get_blockchain()) for node in nodes)):
@@ -237,9 +241,12 @@ def test_deterministic_replay():
         
         # Run consensus
         for _ in range(100):
+            # Network tick: advance time và deliver messages
+            network.tick(0.01)
+            
+            # Node tick: xử lý messages và events
             for node in nodes:
-                node.propose_block_if_leader()
-                node.process_network_messages()
+                node.tick()
         
         # Get final state hashes
         return [node.consensus.current_state.get_hash() for node in nodes]

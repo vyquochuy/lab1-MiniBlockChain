@@ -162,7 +162,7 @@ TEST: Message Delays
 PASSED: Messages are properly delayed
 
 TEST: Packet Loss
-PASSED: Packet loss rate: 56.00%
+PASSED: Packet loss rate: 55.00%
 
 TEST: Message Duplicates
 PASSED: Message duplication works
@@ -171,11 +171,11 @@ TEST: Message Broadcasting
 PASSED: Broadcasting works correctly
 
 TEST: Message Reordering
-   Messages were reordered: [3, 7, 2, 4, 8]...
+   Messages were reordered: [9, 3, 5, 1, 2]...
 PASSED: Message reordering can occur
 
 TEST: Network Statistics
-   Delivered: 43, Dropped: 12, Duplicated: 5
+   Delivered: 45, Dropped: 9, Duplicated: 4
 PASSED: Network statistics tracked correctly
 
 TEST: Zero Delay Mode
@@ -240,11 +240,11 @@ FINAL TEST REPORT
 PASSED - test_crypto          (0.02s)
 PASSED - test_execution       (0.01s)
 PASSED - test_consensus       (0.01s)
-PASSED - test_network         (0.32s)
-PASSED - test_e2e             (3.16s)
+PASSED - test_network         (0.00s)
+PASSED - test_e2e             (0.09s)
 
 ================================================================================
-Total Duration: 3.62s
+Total Duration: 0.21s
 ================================================================================
 
 ALL TEST SUITES PASSED!
