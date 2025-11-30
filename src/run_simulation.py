@@ -4,14 +4,14 @@ Demonstrates blockchain consensus with multiple validators
 """
 import sys
 import os
-from contextlib import contextmanager
-sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
-
-from crypto.keys import KeyPair
-from network.network import UnreliableNetwork
-from node import BlockchainNode, Logger
 import time
 import json
+from crypto.keys import KeyPair
+from contextlib import contextmanager
+from node import BlockchainNode, Logger
+from network.network import UnreliableNetwork
+
+sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
 
 class TeeStream:
@@ -47,7 +47,7 @@ def tee_output_to_file(log_path: str):
             sys.stdout = original_stdout
             sys.stderr = original_stderr
 
-def run_simulation(num_validators=4, num_blocks=3, num_txs_per_block=2, 
+def run_simulation(num_validators=10, num_blocks=3, num_txs_per_block=2, 
                    network_delay=(0.01, 0.05), loss_rate=0.1, verbose=True):
     """
     Run blockchain simulation with multiple validators
@@ -122,23 +122,47 @@ def run_simulation(num_validators=4, num_blocks=3, num_txs_per_block=2,
     for node in nodes:
         node.initialize_genesis(initial_balances)
     
-    print("✓ All nodes initialized with genesis block")
+    print("All nodes initialized with genesis block")
     print()
     
-    # Simulation loop
+    # Simulation loop - while True để giữ mạng chạy liên tục
+    # Logic "giữ mạng chạy" nằm trong Network.tick() và Node.tick()
     blocks_finalized = 0
     iteration = 0
-    max_iterations = 1000
+    max_iterations = 10000
+    max_simulation_time = 10.0  # Tối đa 10s simulation time
     
-    while blocks_finalized < num_blocks and iteration < max_iterations:
+    # Time step cho mỗi iteration (simulation time, không phải real time)
+    time_step = 0.1  # 100ms simulation time mỗi iteration
+    
+    print("Starting continuous network simulation...")
+    print("Network and Nodes will process events continuously\n")
+    
+    while True:
         iteration += 1
+        simulation_time = network.get_simulation_time()
         
-        # Each node checks if it should propose
+        # Kiểm tra điều kiện dừng
+        if blocks_finalized >= num_blocks:
+            print(f"\nTarget blocks ({num_blocks}) reached. Stopping simulation.")
+            break
+        
+        if iteration > max_iterations:
+            print(f"\nMax iterations ({max_iterations}) reached. Stopping simulation.")
+            break
+        
+        if simulation_time > max_simulation_time:
+            print(f"\nMax simulation time ({max_simulation_time}s) reached. Stopping simulation.")
+            break
+        
+        # 1. Network tick: advance time và tự động deliver messages đã đến delivery_time
+        # Đây là phần quan trọng nhất - network tự động deliver messages
+        network.tick(time_step)
+        
+        # 2. Mỗi node tick: tự động xử lý messages và events
+        # Node tự động poll inbox và xử lý tất cả events
         for node in nodes:
-            if blocks_finalized >= num_blocks:
-                break
-            
-            # Add some transactions if pool is empty
+            # Thêm transactions nếu pool rỗng (để có data cho blocks)
             if len(node.tx_pool) < num_txs_per_block:
                 for _ in range(num_txs_per_block):
                     # Random transfer between validators
@@ -146,23 +170,17 @@ def run_simulation(num_validators=4, num_blocks=3, num_txs_per_block=2,
                     tx = node.create_transaction(recipient, 10)
                     node.submit_transaction(tx)
             
-            # Try to propose block
-            node.propose_block_if_leader()
+            # Node tick: xử lý messages từ inbox và các events
+            node.tick()
         
-        # Process network messages
-        for node in nodes:
-            node.process_network_messages()
-        
-        # Check if new block was finalized
+        # 3. Kiểm tra block mới được finalize
         current_finalized = min(len(node.get_blockchain()) for node in nodes)
         if current_finalized > blocks_finalized:
             blocks_finalized = current_finalized - 1  # -1 for genesis
             print(f"\n{'='*80}")
-            print(f"BLOCK {blocks_finalized} FINALIZED!")
+            print(f"BLOCK {blocks_finalized} FINALIZED! (simulation time: {simulation_time:.3f}s)")
             print(f"{'='*80}\n")
         
-        # Small delay to simulate time passing
-        time.sleep(0.01)
     
     print("\n" + "="*80)
     print("SIMULATION COMPLETE")
@@ -218,7 +236,7 @@ if __name__ == "__main__":
         
         # Run simulation
         nodes, success = run_simulation(
-            num_validators=4,
+            num_validators=10,
             num_blocks=3,
             num_txs_per_block=2,
             network_delay=(0.01, 0.05),

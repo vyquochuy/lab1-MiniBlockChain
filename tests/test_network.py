@@ -25,8 +25,8 @@ def test_message_delivery():
     # Send message
     network.send_message("alice", "bob", "TEST", {"data": "hello"})
     
-    # Wait for delivery
-    time.sleep(0.02)
+    # Advance simulation time để deliver message
+    network.tick(0.02)
     
     # Deliver messages
     messages = network.deliver_ready_messages()
@@ -54,22 +54,22 @@ def test_message_delays():
     )
     
     # Send message
-    start_time = time.time()
     network.send_message("alice", "bob", "TEST", {"data": "hello"})
     
-    # Try to deliver immediately (should be empty)
-    messages = network.deliver_ready_messages()
+    # Try to get messages immediately (should be empty vì chưa advance time)
+    messages = network.get_messages("bob")
     assert len(messages) == 0, "Message delivered too early"
     
-    # Wait for delay
-    time.sleep(0.11)
+    # Advance simulation time một chút (chưa đủ để deliver)
+    network.tick(0.01)
+    messages = network.get_messages("bob")
+    assert len(messages) == 0, "Message delivered too early"
     
-    # Now should be delivered
-    messages = network.deliver_ready_messages()
-    elapsed = time.time() - start_time
+    # Advance simulation time đủ để deliver message
+    network.tick(0.11)
+    messages = network.get_messages("bob")
     
     assert len(messages) == 1, "Message not delivered"
-    assert elapsed >= 0.05, f"Message delivered too early: {elapsed}s"
     
     print("PASSED: Messages are properly delayed")
     return True
@@ -119,8 +119,8 @@ def test_message_duplicates():
     # Send message
     network.send_message("alice", "bob", "TEST", {"data": "hello"})
     
-    # Wait and deliver
-    time.sleep(0.02)
+    # Advance simulation time và deliver
+    network.tick(0.02)
     messages = network.deliver_ready_messages()
     
     # Should have original + duplicate = 2 messages
@@ -152,8 +152,8 @@ def test_broadcast():
     # Broadcast
     network.broadcast_message("alice", receivers, "BROADCAST", {"msg": "hello all"})
     
-    # Wait and deliver
-    time.sleep(0.02)
+    # Advance simulation time và deliver
+    network.tick(0.02)
     messages = network.deliver_ready_messages()
     
     # Should have 3 messages (not sent to alice)
@@ -180,13 +180,13 @@ def test_message_reordering():
         enable_delays=True
     )
     
-    # Send messages in sequence
+    # Send messages in sequence với simulation time
     for i in range(10):
         network.send_message("alice", "bob", "TEST", {"seq": i})
-        time.sleep(0.001)  # Small delay between sends
+        network.tick(0.001)  # Small delay between sends
     
-    # Wait for all deliveries
-    time.sleep(0.1)
+    # Advance time để deliver tất cả messages
+    network.tick(0.1)
     messages = network.deliver_ready_messages()
     
     # Extract sequence numbers
@@ -223,8 +223,8 @@ def test_network_stats():
     for i in range(50):
         network.send_message("alice", "bob", "TEST", {"seq": i})
     
-    # Wait and deliver
-    time.sleep(0.02)
+    # Advance simulation time và deliver
+    network.tick(0.02)
     messages = network.deliver_ready_messages()
     
     # Get stats
@@ -258,8 +258,8 @@ def test_zero_delay_mode():
     # Send message
     network.send_message("alice", "bob", "TEST", {"data": "hello"})
     
-    # Should be deliverable immediately
-    time.sleep(0.005)
+    # Should be deliverable immediately (delay = 0)
+    network.tick(0.005)
     messages = network.deliver_ready_messages()
     
     assert len(messages) == 1, "Message not delivered in zero-delay mode"
@@ -300,7 +300,7 @@ def run_all_network_tests():
     print("="*80)
     
     for name, result in results:
-        status = "PASSED" if result else "❌ FAILED"
+        status = "PASSED" if result else "FAILED"
         print(f"{status}: {name}")
     
     all_passed = all(r for _, r in results)

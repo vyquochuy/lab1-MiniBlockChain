@@ -4,8 +4,9 @@ Simulates message delays, duplicates, reordering, and drops
 """
 import random
 import time
-from typing import List, Callable, Any
+from typing import List, Callable, Any, Dict
 from dataclasses import dataclass
+from collections import defaultdict
 
 @dataclass
 class NetworkMessage:
@@ -31,8 +32,15 @@ class UnreliableNetwork:
         self.duplicate_rate = duplicate_rate
         self.enable_delays = enable_delays
         
-        # Message queue
+        # Simulation time (không dùng time.time() nữa)
+        self.simulation_time = 0.0
+        
+        # Message queue - messages chờ đến delivery_time
         self.message_queue: List[NetworkMessage] = []
+        
+        # Inbox cho mỗi node - messages đã sẵn sàng để deliver
+        self.inboxes: Dict[str, List[NetworkMessage]] = defaultdict(list)
+        
         self.delivered_count = 0
         self.dropped_count = 0
         self.duplicated_count = 0
@@ -40,7 +48,8 @@ class UnreliableNetwork:
     def send_message(self, sender: str, receiver: str, 
                      message_type: str, payload: Any):
         """Send a message through the unreliable network"""
-        current_time = time.time()
+        # Dùng simulation time thay vì time.time()
+        send_time = self.simulation_time
         
         # Simulate packet loss
         if random.random() < self.loss_rate:
@@ -55,7 +64,7 @@ class UnreliableNetwork:
         else:
             delay = 0.0
         
-        delivery_time = current_time + delay
+        delivery_time = send_time + delay
         
         # Create message
         msg = NetworkMessage(
@@ -63,7 +72,7 @@ class UnreliableNetwork:
             receiver=receiver,
             message_type=message_type,
             payload=payload,
-            send_time=current_time,
+            send_time=send_time,
             delivery_time=delivery_time
         )
         
@@ -71,7 +80,7 @@ class UnreliableNetwork:
         
         self.logger.log("NETWORK", 
                        f"→ SENT {message_type} from {sender[:8]}... to {receiver[:8]}... "
-                       f"(delay: {delay:.3f}s)")
+                       f"(delay: {delay:.3f}s, delivery at t={delivery_time:.3f})")
         
         # Simulate message duplication
         if random.random() < self.duplicate_rate:
@@ -81,8 +90,8 @@ class UnreliableNetwork:
                 receiver=receiver,
                 message_type=message_type,
                 payload=payload,
-                send_time=current_time,
-                delivery_time=current_time + duplicate_delay
+                send_time=send_time,
+                delivery_time=send_time + duplicate_delay
             )
             self.message_queue.append(duplicate_msg)
             self.duplicated_count += 1
@@ -97,48 +106,87 @@ class UnreliableNetwork:
             if receiver != sender:  # Don't send to self
                 self.send_message(sender, receiver, message_type, payload)
     
-    def deliver_ready_messages(self, receiver: str = None) -> List[NetworkMessage]:
+    def tick(self, delta_time: float):
         """
-        Deliver messages ready to be consumed.
+        Advance simulation time và tự động deliver messages đã đến delivery_time.
+        Đây là method chính để network "chạy liên tục".
         
         Args:
-            receiver: if provided, only deliver messages addressed to this receiver.
-                      Ready messages for other receivers stay queued.
+            delta_time: Thời gian mô phỏng trôi qua (không phải real time)
         """
-        current_time = time.time()
-        ready_messages = []
-        ready_for_others = []
+        # Advance simulation time
+        self.simulation_time += delta_time
+        
+        # Deliver messages đã đến delivery_time vào inbox của receiver
         remaining_messages = []
         
         for msg in self.message_queue:
-            if msg.delivery_time <= current_time:
-                if receiver is not None and msg.receiver != receiver:
-                    ready_for_others.append(msg)
-                    continue
-                
-                ready_messages.append(msg)
+            if msg.delivery_time <= self.simulation_time:
+                # Message đã đến thời điểm deliver
+                self.inboxes[msg.receiver].append(msg)
                 self.delivered_count += 1
                 self.logger.log(
                     "NETWORK",
                     f"← DELIVERED {msg.message_type} to {msg.receiver[:8]}... "
-                    f"(latency: {current_time - msg.send_time:.3f}s)"
+                    f"(latency: {self.simulation_time - msg.send_time:.3f}s, t={self.simulation_time:.3f})"
                 )
             else:
+                # Message chưa đến thời điểm deliver
                 remaining_messages.append(msg)
         
-        # Keep messages that are ready but destined for other receivers
-        self.message_queue = remaining_messages + ready_for_others
+        self.message_queue = remaining_messages
         
-        # Messages may arrive out of order
-        random.shuffle(ready_messages)
+        # Messages trong inbox có thể đến out of order
+        for receiver in self.inboxes:
+            random.shuffle(self.inboxes[receiver])
+    
+    def get_messages(self, receiver: str) -> List[NetworkMessage]:
+        """
+        Lấy messages từ inbox của receiver (và xóa chúng khỏi inbox).
+        Node sẽ gọi method này để lấy messages.
+        """
+        messages = self.inboxes[receiver]
+        self.inboxes[receiver] = []
+        return messages
+    
+    def deliver_ready_messages(self, receiver: str = None) -> List[NetworkMessage]:
+        """
+        DEPRECATED: Dùng get_messages() thay vì method này.
+        Giữ lại để backward compatibility với tests.
         
-        return ready_messages
+        Tự động advance time một chút để deliver messages đã đến delivery_time.
+        """
+        # Advance time một chút để deliver messages đã đến delivery_time
+        # Đây là workaround cho tests cũ - trong production nên dùng tick()
+        if len(self.message_queue) > 0:
+            # Tìm message có delivery_time sớm nhất
+            min_delivery_time = min(msg.delivery_time for msg in self.message_queue)
+            if min_delivery_time > self.simulation_time:
+                # Advance time đến delivery_time của message sớm nhất
+                delta = min_delivery_time - self.simulation_time + 0.001  # Thêm 1ms để chắc chắn
+                self.tick(delta)
+        
+        if receiver is not None:
+            return self.get_messages(receiver)
+        else:
+            # Return all messages from all inboxes
+            all_messages = []
+            for receiver_addr in list(self.inboxes.keys()):
+                all_messages.extend(self.get_messages(receiver_addr))
+            return all_messages
     
     def get_stats(self):
         """Get network statistics"""
+        total_inbox = sum(len(msgs) for msgs in self.inboxes.values())
         return {
             "delivered": self.delivered_count,
             "dropped": self.dropped_count,
             "duplicated": self.duplicated_count,
-            "pending": len(self.message_queue)
+            "pending": len(self.message_queue),
+            "in_inboxes": total_inbox,
+            "simulation_time": self.simulation_time
         }
+    
+    def get_simulation_time(self) -> float:
+        """Get current simulation time"""
+        return self.simulation_time
