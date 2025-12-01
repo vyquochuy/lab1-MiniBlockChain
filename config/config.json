@@ -6,6 +6,6 @@
 "loss_rate": 0.1,
 "duplicate_rate": 0.05,
 "verbose": true,
-"max_simulation_time": 60.0,
+"max_simulation_time": 1.0,
 "time_step": 0.1
 }

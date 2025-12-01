@@ -133,6 +133,13 @@ class ConsensusEngine:
         self.logger.log("VOTE", 
                        f"{vote.vote_type.value.upper()} from {vote.validator_address[:16]}... "
                        f"for height {height}, block {block_hash[:16]}...")
+
+        # Log any equivocations discovered by the vote collector
+        equivocations = self.vote_collector.pop_equivocations()
+        for ev in equivocations:
+            self.logger.log("CONSENSUS",
+                            f"EQUIVOCATION detected at height {ev['height']} by "
+                            f"{ev['validator'][:16]}...: {ev['first'][:8]} != {ev['second'][:8]} ({ev['type']})")
         
         # Check for transitions
         self._check_phase_transitions(height, block_hash)

@@ -14,9 +14,9 @@ from execution.executor import Executor
 
 def _exec_diagnostics(label: str, state: State = None, executor: Executor = None,
                       transactions=None, executed=None, last_error: str = None):
-    print("\n" + "~" * 60)
+    print("\n" + "=" * 80)
     print(f"EXECUTION DIAGNOSTICS: {label}")
-    print("~" * 60)
+    print("=" * 80)
     if state is not None:
         try:
             d = state.to_dict()

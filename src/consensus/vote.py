@@ -98,6 +98,17 @@ class VoteCollector:
         self.total_validators = total_validators
         self.prevotes = {}  # height -> block_hash -> set of validator addresses
         self.precommits = {}  # height -> block_hash -> set of validator addresses
+        # Track per-height the vote made by each validator to detect equivocation
+        self.prevotes_by_validator = {}  # height -> validator -> block_hash
+        self.precommits_by_validator = {}  # height -> validator -> block_hash
+        # Record equivocation evidence: list of dicts {height, validator, first, second, type}
+        self.equivocations = []
+
+    def pop_equivocations(self):
+        """Return and clear recorded equivocations."""
+        ev = list(self.equivocations)
+        self.equivocations.clear()
+        return ev
     
     def add_vote(self, vote: Vote) -> bool:
         """Add a vote and return True if it's new"""
@@ -109,24 +120,55 @@ class VoteCollector:
         validator = vote.validator_address
         
         if vote.vote_type == VoteType.PREVOTE:
+            # per-validator tracking
+            if height not in self.prevotes_by_validator:
+                self.prevotes_by_validator[height] = {}
+
+            prev_by_val = self.prevotes_by_validator[height]
+            # equivocation detection: validator already prevoted a different hash
+            if validator in prev_by_val:
+                if prev_by_val[validator] == block_hash:
+                    return False  # duplicate same vote
+                # equivocation detected: record it but still track both votes
+                self.equivocations.append({
+                    "height": height,
+                    "validator": validator,
+                    "first": prev_by_val[validator],
+                    "second": block_hash,
+                    "type": "prevote"
+                })
+            # record (or update) latest vote for validator
+            prev_by_val[validator] = block_hash
             if height not in self.prevotes:
                 self.prevotes[height] = {}
             if block_hash not in self.prevotes[height]:
                 self.prevotes[height][block_hash] = set()
-            
-            if validator in self.prevotes[height][block_hash]:
-                return False  # Duplicate
+
             self.prevotes[height][block_hash].add(validator)
             return True
-        
+
         elif vote.vote_type == VoteType.PRECOMMIT:
+            if height not in self.precommits_by_validator:
+                self.precommits_by_validator[height] = {}
+
+            pre_by_val = self.precommits_by_validator[height]
+            if validator in pre_by_val:
+                if pre_by_val[validator] == block_hash:
+                    return False  # duplicate same vote
+                # equivocation detected for precommit; record but still track both votes
+                self.equivocations.append({
+                    "height": height,
+                    "validator": validator,
+                    "first": pre_by_val[validator],
+                    "second": block_hash,
+                    "type": "precommit"
+                })
+            pre_by_val[validator] = block_hash
             if height not in self.precommits:
                 self.precommits[height] = {}
             if block_hash not in self.precommits[height]:
                 self.precommits[height][block_hash] = set()
-            
-            if validator in self.precommits[height][block_hash]:
-                return False  # Duplicate
+
             self.precommits[height][block_hash].add(validator)
             return True
         

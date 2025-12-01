@@ -18,9 +18,9 @@ TEST: KeyPair Generation
 ############################################################
 CRYPTO DIAGNOSTICS: keypair_generation
 ############################################################
- public_key (base64): dsxX9Hj6O8iMojOn3yr4PctkfzTFNJUmK2LSkjbgfYo=
+ public_key (base64): q5BwgZq8U/5VhSasPhDjah265KG8QohNP4PE1eYnbpY=
  public_key_len: 32 bytes
- address: dsxX9Hj6O8iMojOn3yr4PctkfzTFNJUmK2LSkjbgfYo=
+ address: q5BwgZq8U/5VhSasPhDjah265KG8QohNP4PE1eYnbpY=
 PASSED: KeyPair generation works correctly
 
 TEST: Signature Verification
@@ -28,10 +28,10 @@ TEST: Signature Verification
 ############################################################
 CRYPTO DIAGNOSTICS: signature_verification
 ############################################################
- public_key (base64): YxdyqDZKQ+JTYpR3dxIwZ6nJGNa2W2KO2hSRkLpzhWg=
+ public_key (base64): s0rTnzPSQtTR4PxHn/E2yfzfxpl07XW7kmfOrzcSqQw=
  public_key_len: 32 bytes
- address: YxdyqDZKQ+JTYpR3dxIwZ6nJGNa2W2KO2hSRkLpzhWg=
- signature (base64): VTe3ONZ+yj5PcE6/rWZWuv2jcrYhYW3ICtEIPhm2YXXT+jIRdfhWd5JbgShFKQjU0SCcnscLy8qVYv9mE+cjBw==
+ address: s0rTnzPSQtTR4PxHn/E2yfzfxpl07XW7kmfOrzcSqQw=
+ signature (base64): GeQ0RhRYRpqac76VDG6LpaTJOfhuL1cOMhm5vA06H/ONk3Ik7nPcGKo1MwUQ00WC8HpF22iALBOD2fceVGQ4Dw==
  signature_len: 64 bytes
  verified_correct: False
 PASSED: Signature verification works correctly
@@ -41,13 +41,13 @@ TEST: Domain Separation
 ############################################################
 CRYPTO DIAGNOSTICS: domain_separation
 ############################################################
- public_key (base64): 8i5253zeJFMbmBOugEHI0c4PlAikWinnO/bOrzyvI/A=
+ public_key (base64): iME+7lWPYZ1gu05zzpEpOIBrj8/jqm42m9tAe1xoSMg=
  public_key_len: 32 bytes
- address: 8i5253zeJFMbmBOugEHI0c4PlAikWinnO/bOrzyvI/A=
- tx_signature: b'\x96\x8b\xe9\xf2\xb8\xaa(\x0c\x8c\x8b\x89\xca\xf0`\xde:(\xc8\xf0e(\xc6{\x8e\xc2\x167\xdb\x11\x9b\xf2bc\xb0\xc1\x1b\xb3\x15j\xe6\x9e\xfc;\xbd<\xab\x02v\xeaP\xa5\x9a\xca=\xda\x84\x94\xa3\xfb\xac\xc7\x03\xf9\x02'
- vote_signature: b'\x1c\xfa\xaew\xcf\xc7\xff\xa0\xc7\x01\x16\xe2\x1b,u\x01\x80v\x9c\xe3"\xcet\xde\xfa\x8a\xa7F\x02\xa8J*\x01v\x95\x9d\x8fu\xe5\xab\xdf;_\x1f\xed\x82\xdb\xce(\x1d#2Pli/\x9c\x91E6TK\x04\x01'
- tx_sig_b64: lovp8riqKAyMi4nK8GDeOijI8GUoxnuOwhY32xGb8mJjsMEbsxVq5p78O708qwJ26lClmso92oSUo/usxwP5Ag==
- vote_sig_b64: HPqud8/H/6DHARbiGyx1AYB2nOMiznTe+oqnRgKoSioBdpWdj3Xlq987Xx/tgtvOKB0jMlBsaS+ckUU2VEsEAQ==
+ address: iME+7lWPYZ1gu05zzpEpOIBrj8/jqm42m9tAe1xoSMg=
+ tx_signature: b'\xc4k@A\xe8\xdfd\x18:h\xd4n.\xae~\xd4\xbf\\>\xdb\xa3V\xdd\xb8\xccF\xb6\x99\x11\xb0\x05;s\xd6\xb80\x8b3&\xcc\xfb\xcb\xea\xbaU\x9a.=K/\x8b\\\xbc\xe5\xdd\x99\xd1\x1c\x8e@\xa0\xc3C\x0e'
+ vote_signature: b"\x96t\xb1\xc8\x02lf\xc7!\xc0\x03\xb8q\xb2\xff\x9ce'\x7f\x9b\xe0\xfadj\xa4\xfa\xdfX(e\\b\x0c-6\x86/0pU\xa0\x8e\xfd\xa2K-\xc78o1\r\xda4\x8d\xe00\x131\xcb\x10\xccOl\x0b"
+ tx_sig_b64: xGtAQejfZBg6aNRuLq5+1L9cPtujVt24zEa2mRGwBTtz1rgwizMmzPvL6rpVmi49Sy+LXLzl3ZnRHI5AoMNDDg==
+ vote_sig_b64: lnSxyAJsZschwAO4cbL/nGUnf5vg+mRqpPrfWChlXGIMLTaGLzBwVaCO/aJLLcc4bzEN2jSN4DATMcsQzE9sCw==
  tx_verified: True
  vote_verified: True
 PASSED: Domain separation prevents signature reuse
@@ -70,18 +70,18 @@ TEST: Message Serialization
 ############################################################
 CRYPTO DIAGNOSTICS: serialization
 ############################################################
- public_key (base64): lb4KAQvIX1Qw9OSwK2cB+zKc5cREHN+LCWhPb0xZ5yE=
+ public_key (base64): Q+QhGq42qKkjKLJrTQ8n2DYU8IMXEjGX8GSMrWBw6nM=
  public_key_len: 32 bytes
- address: lb4KAQvIX1Qw9OSwK2cB+zKc5cREHN+LCWhPb0xZ5yE=
- signature (base64): 38l1OhAv/t3YIGUeHoOm4nJ8zmzOdKrGn/kWjqiIIYpTxG6y3C5bcg16NFQ6jGiljpUzlFZlYHnC0Ak8DBiiDg==
+ address: Q+QhGq42qKkjKLJrTQ8n2DYU8IMXEjGX8GSMrWBw6nM=
+ signature (base64): xCus9AbXGioDIIWYbcLrNo6pQCiacKfWiD5ExuXtzKb7/HlNJx57pgoU3eD0GgXBmlnqpyWFrODLc5LR+HoeDg==
  signature_len: 64 bytes
- signature_b64 (provided): 38l1OhAv/t3YIGUeHoOm4nJ8zmzOdKrGn/kWjqiIIYpTxG6y3C5bcg16NFQ6jGiljpUzlFZlYHnC0Ak8DBiiDg==
+ signature_b64 (provided): xCus9AbXGioDIIWYbcLrNo6pQCiacKfWiD5ExuXtzKb7/HlNJx57pgoU3eD0GgXBmlnqpyWFrODLc5LR+HoeDg==
  dict keys: ['domain', 'chain_id', 'data', 'signature', 'signer_address']
   domain: TX
   chain_id: test-chain
   data: {'key': 'value', 'number': 123}
-  signature: 38l1OhAv/t3YIGUeHoOm4nJ8zmzOdKrGn/kWjqiIIYpTxG6y3C5bcg16NFQ6jGiljpUzlFZlYHnC0Ak8DBiiDg==
-  signer_address: lb4KAQvIX1Qw9OSwK2cB+zKc5cREHN+LCWhPb0xZ5yE=
+  signature: xCus9AbXGioDIIWYbcLrNo6pQCiacKfWiD5ExuXtzKb7/HlNJx57pgoU3eD0GgXBmlnqpyWFrODLc5LR+HoeDg==
+  signer_address: Q+QhGq42qKkjKLJrTQ8n2DYU8IMXEjGX8GSMrWBw6nM=
 PASSED: Message serialization preserves integrity
 
 TEST: Tamper Detection
@@ -89,12 +89,12 @@ TEST: Tamper Detection
 ############################################################
 CRYPTO DIAGNOSTICS: tamper_detection
 ############################################################
- public_key (base64): jjjANMqjz0q2IQRFevxjnA5+36ELUEFU2/tjRn3RahU=
+ public_key (base64): GXygLkUtK886BVk/rFPZu7QruCl8OVCz0hSXb2GcLCs=
  public_key_len: 32 bytes
- address: jjjANMqjz0q2IQRFevxjnA5+36ELUEFU2/tjRn3RahU=
- original_signature: b'\x9f1}\xc3\xe8\x1b\x9a\x86\xe9J\xc3\x12\xaej\x05Z\xdd\xb2^)e\xe5\xe0\xbb4o\x041\xfa\x9c2\x88\xb9\xb19\xc8t\xde\xaeH\xcaUUC\xb7\xf24\xd2\xf3\x95\x9d\xb6\x02\xa5\xdc\x96m\xb45g$"\x1f\t'
- tampered_signature: b'\x9f1}\xc3\xe8\x1b\x9a\x86\xe9J\xc3\x12\xaej\x05Z\xdd\xb2^)e\xe5\xe0\xbb4o\x041\xfa\x9c2\x88\xb9\xb19\xc8t\xde\xaeH\xcaUUC\xb7\xf24\xd2\xf3\x95\x9d\xb6\x02\xa5\xdc\x96m\xb45g$"\x1f\t'
- original_sig_b64: nzF9w+gbmobpSsMSrmoFWt2yXill5eC7NG8EMfqcMoi5sTnIdN6uSMpVVUO38jTS85WdtgKl3JZttDVnJCIfCQ==
+ address: GXygLkUtK886BVk/rFPZu7QruCl8OVCz0hSXb2GcLCs=
+ original_signature: b'\x86\xc1\xf6\xeb2 h\x17\xdc7#\x14\x11S;\xf8\xd2\xe9\x19w\xcc\x95P\xce\xb7\x11\x88"\xca\xd0{#\xdf\xcb\xf6ZmRH\xb7%G\xeeRh\x00\xdf\xe0k\x1f\xcd.\xc9P\xda\xef\xe1\x97\xae\xca\x03\xa96\x08'
+ tampered_signature: b'\x86\xc1\xf6\xeb2 h\x17\xdc7#\x14\x11S;\xf8\xd2\xe9\x19w\xcc\x95P\xce\xb7\x11\x88"\xca\xd0{#\xdf\xcb\xf6ZmRH\xb7%G\xeeRh\x00\xdf\xe0k\x1f\xcd.\xc9P\xda\xef\xe1\x97\xae\xca\x03\xa96\x08'
+ original_sig_b64: hsH26zIgaBfcNyMUEVM7+NLpGXfMlVDOtxGIIsrQeyPfy/ZabVJItyVH7lJoAN/gax/NLslQ2u/hl67KA6k2CA==
 PASSED: Data tampering is detected
 
 ================================================================================
@@ -162,9 +162,9 @@ TEST: Transaction Nonce (Replay Protection)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 EXECUTION DIAGNOSTICS: transaction_nonce
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- state_hash: 008f1fa31a92a337e8a42bb85b320b633c976fff4c3b12f4e21b672659cae084
- balances: {'DUi7AGSnJMzBd/ABrrllwwNPOR1FonGD2g+wjJ3U9pQ=': 800, 'recipient': 200}
- processed_nonces: {'DUi7AGSnJMzBd/ABrrllwwNPOR1FonGD2g+wjJ3U9pQ=': 2}
+ state_hash: 46d44bceea7755e1b0d2ca48f6f0ef19f8849d331ca1e85b76eadfed3e035e56
+ balances: {'llXmYuAPcfhyrmFMomuVBJvndT/vrdpPoCp6Kvz1c68=': 800, 'recipient': 200}
+ processed_nonces: {'llXmYuAPcfhyrmFMomuVBJvndT/vrdpPoCp6Kvz1c68=': 2}
 
 PASSED: Nonce prevents replay attacks
 
@@ -181,11 +181,11 @@ TEST: Executor Determinism
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 EXECUTION DIAGNOSTICS: executor_determinism
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- state_hash: 78b8c2d727e2f5f27db9642aa28ef0735770efdaf3a59982c3e398a0fca5cf9e
- balances: {'PNP70io0Z4gdMeTYUTpVdJa7aVP6Amq71wQpZm2FeRE=': 850, 'recipient_0': 10, 'recipient_1': 20, 'recipient_2': 30, 'recipient_3': 40, 'recipient_4': 50}
- processed_nonces: {'PNP70io0Z4gdMeTYUTpVdJa7aVP6Amq71wQpZm2FeRE=': 5}
+ state_hash: 7c95b484949198e3b1414af251c75c7ff628cb7674e6251bfd17f1ff1c99aa37
+ balances: {'fzEG5Jdf9Rq60ZNEeD19n/3pVFwQli3DwXR6hCmQook=': 850, 'recipient_0': 10, 'recipient_1': 20, 'recipient_2': 30, 'recipient_3': 40, 'recipient_4': 50}
+ processed_nonces: {'fzEG5Jdf9Rq60ZNEeD19n/3pVFwQli3DwXR6hCmQook=': 5}
  transactions_count: 5
- executed: ['8e3fa74ba89913f334fac39c69d5a28e9732c02d8065ab0a6d53a523210b9b60', '2fb8c0cf5fe461f26dfaac328f5d9ef123da09933cb5e1ea394462dadb403aea', '50c4fb2fc4b1b1e533f5db1f5cdddc28c4bae87ebb6a3c649a9471f723d4ed24', '5c31c96f5aa2f47a05b2226e3fd9409f93abba1b4052f03100d933f999c9398f', 'a048849f526f2a8e8bfa3aa795c29ea3917f405072481affa8596ee82ee25810']
+ executed: ['34477500f95d2ae436f5611619d51d072518529f2829c573b972c848a7c6b5f3', 'fdbfd7f7905d6adc46f3ec17a398a77cdc59c7849d8f2097417a7c91ce9f6b91', '9fc72134a165003ff64b7989e2fd822f34753e26ab1f49037e4a7c67e21dabdc', '1d6283c33683962a19f0f93a7120415c743a5a635065963bb6f64ca206392c7f', 'b93e60e8a89ae8fd80b938e3c01cf291e52984f76d8cff1a79c3796bfe5056ea']
 
 PASSED: Executor is deterministic
 
@@ -194,8 +194,8 @@ TEST: Insufficient Balance Check
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 EXECUTION DIAGNOSTICS: insufficient_balance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- state_hash: 4833dfe289480af12696485a8dde26e05d51c8e793f33ae1080df29ff1198460
- balances: {'7jTvQhbxsWW/5J0Y98nqA1XAC4JkK9Iz+dQ9hWKwl3A=': 50}
+ state_hash: 5f1dedaae4570365d7a5c749dd63e318faf0a61bac62aaf502058181073ffec5
+ balances: {'Uj8SI/vAsHw9yVS9z5+ujWP8EIAENdh/J+2fsfrua3I=': 50}
  processed_nonces: {}
  last_error: Insufficient balance. Has 50, needs 100
 
@@ -223,10 +223,10 @@ TEST: Transaction Ordering
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 EXECUTION DIAGNOSTICS: transaction_ordering
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- state_hash: b1518d966b50eb0430f9ea73a2859f3372b0a6e22ad60d9b9d7e1e34735954f5
- balances: {'IEfPHD4bWlhSUBfA9Fp0hBOpzppT5meH6buiW8vabd8=': 200, '8UnXAsoCsnY0HIF3ejbMbCa6PzC2iGGq9+//YMWxUtI=': 800}
- processed_nonces: {'IEfPHD4bWlhSUBfA9Fp0hBOpzppT5meH6buiW8vabd8=': 2}
- executed: ['43c05cf841e0ea17d110a2ffbaffc3b77cbca18a0aa5bc92e8940b2e51b7cf0c', '6da29125f481017a15c7f47f77ec1561ec6466b557c21a2939cfb4998092cd84']
+ state_hash: bff8296c98bba13b7a2db3351fb6e34fafb0152bb2081db9c05cac7ca15e8dcf
+ balances: {'6Zbn31boIes6KhRqU2H9pJqFXOno1T/ZjfQkbN/zcI0=': 200, '9fPKy1sbItyG/0fCIWvj9mLy5Q3JzFUNh+3jvReIWsA=': 800}
+ processed_nonces: {'6Zbn31boIes6KhRqU2H9pJqFXOno1T/ZjfQkbN/zcI0=': 2}
+ executed: ['f949b774090e8ccc708eb7d85ee0ad12c8fab0d435b3e801bad2c072168c5da5', '237022220da1cbea9876713b01898a1c87f046d96956ac308cd4fd650d03eaaf']
 
 PASSED: Transaction ordering is respected
 
@@ -264,7 +264,7 @@ CONSENSUS DIAGNOSTICS: after_adding_prevotes
 ================================================================================
  total_validators: 4
  prevotes:
-   height=1, block=abc123..., voters=3 -> ['18nrzw/5cpfhcXaW5C8V2HfOxbehOCHrXOUse6NPHLI=', '6jikerfsk2uqFkV7BKeOSJDscD2Y6+ZY+0qHQnqphNA=', 'aNJmHZtRHozDSIJoTIpbRrpYN8Swu7pHQUBnixcZgBs=']
+   height=1, block=abc123..., voters=3 -> ['5F1bhk+aNdsTTIz74CaBcMmW8719Z6J8RF+gmFXixBs=', 'GEVLYuMUGYLIl+WAwNohrxYS5Z4cA8bXJqyGwdazFTk=', 'QP1VDMfKdoyHv1gAV/BTPU5SYDdG82y8ewjdPLVyWb0=']
  precommits:
  height=1: prevotes={'abc123': 3}, precommits={}
 
@@ -289,7 +289,7 @@ CONSENSUS DIAGNOSTICS: after_prevotes_two_phase
 ================================================================================
  total_validators: 4
  prevotes:
-   height=1, block=block123..., voters=3 -> ['g8biRcvy/f/M52ikuLjSs2amDXbCqxOfoNSuGFvAgV4=', 'ho10iqQ87dEyRdeDQt34q08HI5CB0KCvAQXVoXHWDRg=', 'IRZ4QLbcFRmKPoAYrJVi44aD7rFGR86e+KoKOUraznE=']
+   height=1, block=block123..., voters=3 -> ['nDca7dd+ljxl9klOqkKqeLrflbqGMPhNl1uFtPDpNrU=', 'jCZ9VxpBo3jHKEuX6EgQy0RUY0jAQI/JUEKDWCbwVoY=', '0Xx511YZDxLD4NLqMpw6iwHvxUO8ecpFWJ9d3djcgRk=']
  precommits:
  height=1: prevotes={'block123': 3}, precommits={}
 
@@ -299,9 +299,9 @@ CONSENSUS DIAGNOSTICS: after_precommits_two_phase
 ================================================================================
  total_validators: 4
  prevotes:
-   height=1, block=block123..., voters=3 -> ['g8biRcvy/f/M52ikuLjSs2amDXbCqxOfoNSuGFvAgV4=', 'ho10iqQ87dEyRdeDQt34q08HI5CB0KCvAQXVoXHWDRg=', 'IRZ4QLbcFRmKPoAYrJVi44aD7rFGR86e+KoKOUraznE=']
+   height=1, block=block123..., voters=3 -> ['nDca7dd+ljxl9klOqkKqeLrflbqGMPhNl1uFtPDpNrU=', 'jCZ9VxpBo3jHKEuX6EgQy0RUY0jAQI/JUEKDWCbwVoY=', '0Xx511YZDxLD4NLqMpw6iwHvxUO8ecpFWJ9d3djcgRk=']
  precommits:
-   height=1, block=block123..., voters=3 -> ['g8biRcvy/f/M52ikuLjSs2amDXbCqxOfoNSuGFvAgV4=', 'ho10iqQ87dEyRdeDQt34q08HI5CB0KCvAQXVoXHWDRg=', 'IRZ4QLbcFRmKPoAYrJVi44aD7rFGR86e+KoKOUraznE=']
+   height=1, block=block123..., voters=3 -> ['nDca7dd+ljxl9klOqkKqeLrflbqGMPhNl1uFtPDpNrU=', 'jCZ9VxpBo3jHKEuX6EgQy0RUY0jAQI/JUEKDWCbwVoY=', '0Xx511YZDxLD4NLqMpw6iwHvxUO8ecpFWJ9d3djcgRk=']
  height=1: prevotes={'block123': 3}, precommits={'block123': 3}
 
 PASSED: Two-phase voting process works correctly
@@ -313,8 +313,8 @@ CONSENSUS DIAGNOSTICS: after_conflicting_votes
 ================================================================================
  total_validators: 3
  prevotes:
-   height=1, block=block1..., voters=1 -> ['lFrRgp1Nha9LeQTay/PYwJuGa+irjMt6mpcpJB8LvhI=']
-   height=1, block=block2..., voters=1 -> ['lFrRgp1Nha9LeQTay/PYwJuGa+irjMt6mpcpJB8LvhI=']
+   height=1, block=block1..., voters=1 -> ['dGIQ0xI/7tkydMKaAM6h9gqk3UqmB0JLPe5IPszKcTw=']
+   height=1, block=block2..., voters=1 -> ['dGIQ0xI/7tkydMKaAM6h9gqk3UqmB0JLPe5IPszKcTw=']
  precommits:
  height=1: prevotes={'block1': 1, 'block2': 1}, precommits={}
 
@@ -327,9 +327,9 @@ CONSENSUS DIAGNOSTICS: engine_after_receive_proposal
 ================================================================================
  total_validators: 4
  prevotes:
-   height=1, block=5a9a9ebc..., voters=1 -> ['gX1p3FfnK78XlDwBegm+yo+5t4+W62IeUK1fYfFgM7s=']
+   height=1, block=7025d389..., voters=1 -> ['fsWaAHpCoR0uVRUWNgRy4QmH5/FgtihA2YdFAK/C6qc=']
  precommits:
- height=1: prevotes={'5a9a9ebcc04311ba9361b326954af5438278c0eec53ff4f8b1762333301994b3': 1}, precommits={}
+ height=1: prevotes={'7025d389f255b50676ebd27170ed53881048801955c44b389aa50f9793b136be': 1}, precommits={}
 
 
 ================================================================================
@@ -337,10 +337,10 @@ CONSENSUS DIAGNOSTICS: engine_after_external_prevotes
 ================================================================================
  total_validators: 4
  prevotes:
-   height=1, block=5a9a9ebc..., voters=3 -> ['gX1p3FfnK78XlDwBegm+yo+5t4+W62IeUK1fYfFgM7s=', 'rMv2of63Kmo2dwQYYJNWjGdwmOE3ddf9SNvIf00KAQE=', 'q6iG3vfcO9ADDEELjQHQIodMWPdkBNe9QeZUJNg4d50=']
+   height=1, block=7025d389..., voters=3 -> ['fsWaAHpCoR0uVRUWNgRy4QmH5/FgtihA2YdFAK/C6qc=', 'ZuNN0CCaq+IGvfUEj6L7WB6d8i5eqm2NqtLBfQkpX8A=', 'FpjoYG9VcE3Vy+9i50+VpCwoHrTM24HijhUrVNR4ypA=']
  precommits:
-   height=1, block=5a9a9ebc..., voters=1 -> ['gX1p3FfnK78XlDwBegm+yo+5t4+W62IeUK1fYfFgM7s=']
- height=1: prevotes={'5a9a9ebcc04311ba9361b326954af5438278c0eec53ff4f8b1762333301994b3': 3}, precommits={'5a9a9ebcc04311ba9361b326954af5438278c0eec53ff4f8b1762333301994b3': 1}
+   height=1, block=7025d389..., voters=1 -> ['fsWaAHpCoR0uVRUWNgRy4QmH5/FgtihA2YdFAK/C6qc=']
+ height=1: prevotes={'7025d389f255b50676ebd27170ed53881048801955c44b389aa50f9793b136be': 3}, precommits={'7025d389f255b50676ebd27170ed53881048801955c44b389aa50f9793b136be': 1}
 
 PASSED: ConsensusEngine diagnostics
 
@@ -382,16 +382,16 @@ TEST: Packet Loss
   num_messages: 100
 --- NETWORK STATS ---
   delivered: 0
-  dropped: 55
+  dropped: 59
   duplicated: 0
-  pending: 45
+  pending: 41
   in_inboxes: 0
   simulation_time: 0.0
   blocked_peers: 0
   rate_limited_drops: 0
   rate_limit_drops: 0
-  Calculated loss rate: 55.00% (expected ~50%)
-PASSED: Packet loss rate: 55.00%
+  Calculated loss rate: 59.00% (expected ~50%)
+PASSED: Packet loss rate: 59.00%
 
 TEST: Message Duplicates
 PASSED: Message duplication works
@@ -400,7 +400,7 @@ TEST: Message Broadcasting
 PASSED: Broadcasting works correctly
 
 TEST: Message Reordering
-   Messages were reordered: [8, 6, 5, 0, 4]...
+   Messages were reordered: [8, 3, 5, 0, 6]...
 PASSED: Message reordering can occur
 
 TEST: Network Statistics
@@ -411,9 +411,9 @@ TEST: Network Statistics
   enable_delays: False
   num_messages: 50
 --- NETWORK STATS ---
-  delivered: 48
-  dropped: 8
-  duplicated: 6
+  delivered: 41
+  dropped: 13
+  duplicated: 4
   pending: 0
   in_inboxes: 0
   simulation_time: 0.02
@@ -537,17 +537,17 @@ Network stats:
   rate_limited_drops: 0
 
 Node states:
-  Node[0] J6H1p+8t...: chain_len=1, height=1, tx_pool=0, last_block=08bf22550adccc8f, prevoted=1, precommitted=0
-  Node[1] HvPcYlUl...: chain_len=1, height=1, tx_pool=1, last_block=08bf22550adccc8f, prevoted=0, precommitted=0
-  Node[2] b7xTudth...: chain_len=1, height=1, tx_pool=1, last_block=08bf22550adccc8f, prevoted=0, precommitted=0
-  Node[3] CJzftcZU...: chain_len=1, height=1, tx_pool=1, last_block=08bf22550adccc8f, prevoted=0, precommitted=0
+  Node[0] WXIiNv/T...: chain_len=1, height=1, tx_pool=0, last_block=db10643e3ae41461, prevoted=1, precommitted=0
+  Node[1] AxPH0f+5...: chain_len=1, height=1, tx_pool=1, last_block=db10643e3ae41461, prevoted=0, precommitted=0
+  Node[2] ujeIkvZx...: chain_len=1, height=1, tx_pool=1, last_block=db10643e3ae41461, prevoted=0, precommitted=0
+  Node[3] naQbUD6o...: chain_len=1, height=1, tx_pool=1, last_block=db10643e3ae41461, prevoted=0, precommitted=0
 
 --------------------------------------------------------------------------------
 DIAGNOSTICS: single_block_running @ tick=20
 --------------------------------------------------------------------------------
 Network stats:
   simulation_time: 0.21000000000000005
-  delivered: 55
+  delivered: 56
   dropped: 0
   duplicated: 4
   pending (message_queue): 0
@@ -556,17 +556,17 @@ Network stats:
   rate_limited_drops: 0
 
 Node states:
-  Node[0] J6H1p+8t...: chain_len=2, height=2, tx_pool=0, last_block=fdc7aa988326d6de, prevoted=1, precommitted=1
-  Node[1] HvPcYlUl...: chain_len=2, height=2, tx_pool=0, last_block=fdc7aa988326d6de, prevoted=1, precommitted=1
-  Node[2] b7xTudth...: chain_len=2, height=2, tx_pool=1, last_block=fdc7aa988326d6de, prevoted=1, precommitted=1
-  Node[3] CJzftcZU...: chain_len=2, height=2, tx_pool=1, last_block=fdc7aa988326d6de, prevoted=1, precommitted=1
+  Node[0] WXIiNv/T...: chain_len=2, height=2, tx_pool=0, last_block=a1b3b8d24617f72b, prevoted=1, precommitted=1
+  Node[1] AxPH0f+5...: chain_len=2, height=2, tx_pool=0, last_block=a1b3b8d24617f72b, prevoted=1, precommitted=1
+  Node[2] ujeIkvZx...: chain_len=2, height=2, tx_pool=1, last_block=a1b3b8d24617f72b, prevoted=1, precommitted=1
+  Node[3] naQbUD6o...: chain_len=2, height=2, tx_pool=1, last_block=a1b3b8d24617f72b, prevoted=1, precommitted=1
 
 --------------------------------------------------------------------------------
 DIAGNOSTICS: single_block_running @ tick=40
 --------------------------------------------------------------------------------
 Network stats:
   simulation_time: 0.4100000000000002
-  delivered: 55
+  delivered: 56
   dropped: 0
   duplicated: 4
   pending (message_queue): 0
@@ -575,17 +575,17 @@ Network stats:
   rate_limited_drops: 0
 
 Node states:
-  Node[0] J6H1p+8t...: chain_len=2, height=2, tx_pool=0, last_block=fdc7aa988326d6de, prevoted=1, precommitted=1
-  Node[1] HvPcYlUl...: chain_len=2, height=2, tx_pool=0, last_block=fdc7aa988326d6de, prevoted=1, precommitted=1
-  Node[2] b7xTudth...: chain_len=2, height=2, tx_pool=1, last_block=fdc7aa988326d6de, prevoted=1, precommitted=1
-  Node[3] CJzftcZU...: chain_len=2, height=2, tx_pool=1, last_block=fdc7aa988326d6de, prevoted=1, precommitted=1
+  Node[0] WXIiNv/T...: chain_len=2, height=2, tx_pool=0, last_block=a1b3b8d24617f72b, prevoted=1, precommitted=1
+  Node[1] AxPH0f+5...: chain_len=2, height=2, tx_pool=0, last_block=a1b3b8d24617f72b, prevoted=1, precommitted=1
+  Node[2] ujeIkvZx...: chain_len=2, height=2, tx_pool=1, last_block=a1b3b8d24617f72b, prevoted=1, precommitted=1
+  Node[3] naQbUD6o...: chain_len=2, height=2, tx_pool=1, last_block=a1b3b8d24617f72b, prevoted=1, precommitted=1
 
 --------------------------------------------------------------------------------
 DIAGNOSTICS: single_block_running @ tick=60
 --------------------------------------------------------------------------------
 Network stats:
   simulation_time: 0.6100000000000003
-  delivered: 55
+  delivered: 56
   dropped: 0
   duplicated: 4
   pending (message_queue): 0
@@ -594,17 +594,17 @@ Network stats:
   rate_limited_drops: 0
 
 Node states:
-  Node[0] J6H1p+8t...: chain_len=2, height=2, tx_pool=0, last_block=fdc7aa988326d6de, prevoted=1, precommitted=1
-  Node[1] HvPcYlUl...: chain_len=2, height=2, tx_pool=0, last_block=fdc7aa988326d6de, prevoted=1, precommitted=1
-  Node[2] b7xTudth...: chain_len=2, height=2, tx_pool=1, last_block=fdc7aa988326d6de, prevoted=1, precommitted=1
-  Node[3] CJzftcZU...: chain_len=2, height=2, tx_pool=1, last_block=fdc7aa988326d6de, prevoted=1, precommitted=1
+  Node[0] WXIiNv/T...: chain_len=2, height=2, tx_pool=0, last_block=a1b3b8d24617f72b, prevoted=1, precommitted=1
+  Node[1] AxPH0f+5...: chain_len=2, height=2, tx_pool=0, last_block=a1b3b8d24617f72b, prevoted=1, precommitted=1
+  Node[2] ujeIkvZx...: chain_len=2, height=2, tx_pool=1, last_block=a1b3b8d24617f72b, prevoted=1, precommitted=1
+  Node[3] naQbUD6o...: chain_len=2, height=2, tx_pool=1, last_block=a1b3b8d24617f72b, prevoted=1, precommitted=1
 
 --------------------------------------------------------------------------------
 DIAGNOSTICS: single_block_running @ tick=80
 --------------------------------------------------------------------------------
 Network stats:
   simulation_time: 0.8100000000000005
-  delivered: 55
+  delivered: 56
   dropped: 0
   duplicated: 4
   pending (message_queue): 0
@@ -613,10 +613,10 @@ Network stats:
   rate_limited_drops: 0
 
 Node states:
-  Node[0] J6H1p+8t...: chain_len=2, height=2, tx_pool=0, last_block=fdc7aa988326d6de, prevoted=1, precommitted=1
-  Node[1] HvPcYlUl...: chain_len=2, height=2, tx_pool=0, last_block=fdc7aa988326d6de, prevoted=1, precommitted=1
-  Node[2] b7xTudth...: chain_len=2, height=2, tx_pool=1, last_block=fdc7aa988326d6de, prevoted=1, precommitted=1
-  Node[3] CJzftcZU...: chain_len=2, height=2, tx_pool=1, last_block=fdc7aa988326d6de, prevoted=1, precommitted=1
+  Node[0] WXIiNv/T...: chain_len=2, height=2, tx_pool=0, last_block=a1b3b8d24617f72b, prevoted=1, precommitted=1
+  Node[1] AxPH0f+5...: chain_len=2, height=2, tx_pool=0, last_block=a1b3b8d24617f72b, prevoted=1, precommitted=1
+  Node[2] ujeIkvZx...: chain_len=2, height=2, tx_pool=1, last_block=a1b3b8d24617f72b, prevoted=1, precommitted=1
+  Node[3] naQbUD6o...: chain_len=2, height=2, tx_pool=1, last_block=a1b3b8d24617f72b, prevoted=1, precommitted=1
 PASSED: Single block finalized correctly
 
 ================================================================================
@@ -629,75 +629,75 @@ DIAGNOSTICS: no_double_finalization_running @ tick=0
 Network stats:
   simulation_time: 0.01
   delivered: 10
-  dropped: 4
+  dropped: 3
   duplicated: 0
-  pending (message_queue): 7
+  pending (message_queue): 8
   in_inboxes: 0
   blocked_peers: 0
   rate_limited_drops: 0
 
 Node states:
-  Node[0] kNjLbJd1...: chain_len=1, height=1, tx_pool=0, last_block=67450549ad19a4f6, prevoted=1, precommitted=0
-  Node[1] ur2X7NLf...: chain_len=1, height=1, tx_pool=3, last_block=67450549ad19a4f6, prevoted=0, precommitted=0
-  Node[2] tf3B8l23...: chain_len=1, height=1, tx_pool=3, last_block=67450549ad19a4f6, prevoted=0, precommitted=0
-  Node[3] 0WsbT5tl...: chain_len=1, height=1, tx_pool=4, last_block=67450549ad19a4f6, prevoted=0, precommitted=0
+  Node[0] 0XX4KL/k...: chain_len=1, height=1, tx_pool=0, last_block=7804ef1dfc0ba725, prevoted=1, precommitted=0
+  Node[1] VrNqWMOp...: chain_len=1, height=1, tx_pool=3, last_block=7804ef1dfc0ba725, prevoted=0, precommitted=0
+  Node[2] 1xcwy9Wv...: chain_len=1, height=1, tx_pool=4, last_block=7804ef1dfc0ba725, prevoted=0, precommitted=0
+  Node[3] BANNuGHE...: chain_len=1, height=1, tx_pool=4, last_block=7804ef1dfc0ba725, prevoted=0, precommitted=0
 
 --------------------------------------------------------------------------------
 DIAGNOSTICS: no_double_finalization_running @ tick=50
 --------------------------------------------------------------------------------
 Network stats:
   simulation_time: 0.5100000000000002
-  delivered: 52
+  delivered: 56
   dropped: 7
-  duplicated: 2
+  duplicated: 4
   pending (message_queue): 0
   in_inboxes: 0
   blocked_peers: 0
   rate_limited_drops: 0
 
 Node states:
-  Node[0] kNjLbJd1...: chain_len=2, height=2, tx_pool=0, last_block=f771ab5967637d3f, prevoted=1, precommitted=1
-  Node[1] ur2X7NLf...: chain_len=2, height=2, tx_pool=0, last_block=f771ab5967637d3f, prevoted=1, precommitted=1
-  Node[2] tf3B8l23...: chain_len=2, height=2, tx_pool=3, last_block=f771ab5967637d3f, prevoted=1, precommitted=1
-  Node[3] 0WsbT5tl...: chain_len=2, height=2, tx_pool=4, last_block=f771ab5967637d3f, prevoted=1, precommitted=1
+  Node[0] 0XX4KL/k...: chain_len=2, height=2, tx_pool=0, last_block=20edc6db22f6e1d4, prevoted=1, precommitted=1
+  Node[1] VrNqWMOp...: chain_len=2, height=2, tx_pool=0, last_block=20edc6db22f6e1d4, prevoted=1, precommitted=1
+  Node[2] 1xcwy9Wv...: chain_len=2, height=2, tx_pool=4, last_block=20edc6db22f6e1d4, prevoted=1, precommitted=1
+  Node[3] BANNuGHE...: chain_len=2, height=2, tx_pool=4, last_block=20edc6db22f6e1d4, prevoted=1, precommitted=1
 
 --------------------------------------------------------------------------------
 DIAGNOSTICS: no_double_finalization_running @ tick=100
 --------------------------------------------------------------------------------
 Network stats:
   simulation_time: 1.0100000000000007
-  delivered: 52
+  delivered: 56
   dropped: 7
-  duplicated: 2
+  duplicated: 4
   pending (message_queue): 0
   in_inboxes: 0
   blocked_peers: 0
   rate_limited_drops: 0
 
 Node states:
-  Node[0] kNjLbJd1...: chain_len=2, height=2, tx_pool=0, last_block=f771ab5967637d3f, prevoted=1, precommitted=1
-  Node[1] ur2X7NLf...: chain_len=2, height=2, tx_pool=0, last_block=f771ab5967637d3f, prevoted=1, precommitted=1
-  Node[2] tf3B8l23...: chain_len=2, height=2, tx_pool=3, last_block=f771ab5967637d3f, prevoted=1, precommitted=1
-  Node[3] 0WsbT5tl...: chain_len=2, height=2, tx_pool=4, last_block=f771ab5967637d3f, prevoted=1, precommitted=1
+  Node[0] 0XX4KL/k...: chain_len=2, height=2, tx_pool=0, last_block=20edc6db22f6e1d4, prevoted=1, precommitted=1
+  Node[1] VrNqWMOp...: chain_len=2, height=2, tx_pool=0, last_block=20edc6db22f6e1d4, prevoted=1, precommitted=1
+  Node[2] 1xcwy9Wv...: chain_len=2, height=2, tx_pool=4, last_block=20edc6db22f6e1d4, prevoted=1, precommitted=1
+  Node[3] BANNuGHE...: chain_len=2, height=2, tx_pool=4, last_block=20edc6db22f6e1d4, prevoted=1, precommitted=1
 
 --------------------------------------------------------------------------------
 DIAGNOSTICS: no_double_finalization_running @ tick=150
 --------------------------------------------------------------------------------
 Network stats:
   simulation_time: 1.5100000000000011
-  delivered: 52
+  delivered: 56
   dropped: 7
-  duplicated: 2
+  duplicated: 4
   pending (message_queue): 0
   in_inboxes: 0
   blocked_peers: 0
   rate_limited_drops: 0
 
 Node states:
-  Node[0] kNjLbJd1...: chain_len=2, height=2, tx_pool=0, last_block=f771ab5967637d3f, prevoted=1, precommitted=1
-  Node[1] ur2X7NLf...: chain_len=2, height=2, tx_pool=0, last_block=f771ab5967637d3f, prevoted=1, precommitted=1
-  Node[2] tf3B8l23...: chain_len=2, height=2, tx_pool=3, last_block=f771ab5967637d3f, prevoted=1, precommitted=1
-  Node[3] 0WsbT5tl...: chain_len=2, height=2, tx_pool=4, last_block=f771ab5967637d3f, prevoted=1, precommitted=1
+  Node[0] 0XX4KL/k...: chain_len=2, height=2, tx_pool=0, last_block=20edc6db22f6e1d4, prevoted=1, precommitted=1
+  Node[1] VrNqWMOp...: chain_len=2, height=2, tx_pool=0, last_block=20edc6db22f6e1d4, prevoted=1, precommitted=1
+  Node[2] 1xcwy9Wv...: chain_len=2, height=2, tx_pool=4, last_block=20edc6db22f6e1d4, prevoted=1, precommitted=1
+  Node[3] BANNuGHE...: chain_len=2, height=2, tx_pool=4, last_block=20edc6db22f6e1d4, prevoted=1, precommitted=1
 PASSED: No double finalization detected (Safety guaranteed)
 
 ================================================================================
@@ -725,13 +725,13 @@ FINAL TEST REPORT
 ================================================================================
 
 PASSED - test_crypto          (0.02s)
-PASSED - test_execution       (0.01s)
-PASSED - test_consensus       (0.03s)
-PASSED - test_network         (0.04s)
-PASSED - test_e2e             (0.11s)
+PASSED - test_execution       (0.02s)
+PASSED - test_consensus       (0.01s)
+PASSED - test_network         (0.03s)
+PASSED - test_e2e             (0.14s)
 
 ================================================================================
-Total Duration: 0.32s
+Total Duration: 0.30s
 ================================================================================
 
 ALL TEST SUITES PASSED!

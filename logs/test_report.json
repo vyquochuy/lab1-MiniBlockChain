@@ -1,32 +1,32 @@
 {
-  "timestamp": 1764593000.364021,
-  "total_duration": 0.32288265228271484,
+  "timestamp": 1764596064.8550184,
+  "total_duration": 0.3001255989074707,
   "all_passed": true,
   "results": [
     {
       "suite": "test_crypto",
       "passed": true,
-      "duration": 0.023977041244506836
+      "duration": 0.022796630859375
     },
     {
       "suite": "test_execution",
       "passed": true,
-      "duration": 0.01448822021484375
+      "duration": 0.01551961898803711
     },
     {
       "suite": "test_consensus",
       "passed": true,
-      "duration": 0.03118276596069336
+      "duration": 0.014081239700317383
     },
     {
       "suite": "test_network",
       "passed": true,
-      "duration": 0.03948569297790527
+      "duration": 0.027057647705078125
     },
     {
       "suite": "test_e2e",
       "passed": true,
-      "duration": 0.10982465744018555
+      "duration": 0.13866758346557617
     }
   ]
 }

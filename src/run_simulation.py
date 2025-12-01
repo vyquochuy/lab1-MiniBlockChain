@@ -130,8 +130,7 @@ def run_simulation(num_validators, num_blocks, num_txs_per_block,
     print("All nodes initialized with genesis block")
     print()
     
-    # Simulation loop - while True để giữ mạng chạy liên tục
-    # Logic "giữ mạng chạy" nằm trong Network.tick() và Node.tick()
+
     blocks_finalized = 0
     iteration = 0
     max_iterations = 10000
@@ -203,7 +202,8 @@ def run_simulation(num_validators, num_blocks, num_txs_per_block,
         chain_hashes.append(chain_hash_list)
         
         for j, block in enumerate(blockchain):
-            print(f"    Block {j}: {block.get_hash()[:16]}... "
+            height = getattr(block.header, 'height', j)
+            print(f"    Block {j} (height {height}): {block.get_hash()[:16]}... "
                   f"(state: {block.header.state_hash[:16]}...)")
     
     # Check if all chains are identical
