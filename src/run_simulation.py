@@ -50,7 +50,10 @@ def tee_output_to_file(log_path: str):
             sys.stderr = original_stderr
 
 def run_simulation(num_validators, num_blocks, num_txs_per_block, 
-                   network_delay, loss_rate, verbose):
+                   network_delay, loss_rate, verbose,
+                   duplicate_rate: float = 0.05,
+                   max_simulation_time: float = 10.0,
+                   time_step: float = 1):
     """
     Run blockchain simulation with multiple validators
     
@@ -88,7 +91,7 @@ def run_simulation(num_validators, num_blocks, num_txs_per_block,
         logger=master_logger,
         delay_range=network_delay,
         loss_rate=loss_rate,
-        duplicate_rate=0.05
+        duplicate_rate=duplicate_rate
     )
     
     # Create nodes
@@ -132,10 +135,6 @@ def run_simulation(num_validators, num_blocks, num_txs_per_block,
     blocks_finalized = 0
     iteration = 0
     max_iterations = 10000
-    max_simulation_time = 10.0  # Tối đa 10s simulation time
-    
-    # Time step cho mỗi iteration (simulation time)
-    time_step = 1  # 100ms simulation time mỗi iteration
     
     print("Starting continuous network simulation...")
     print("Network and Nodes will process events continuously\n")
@@ -176,9 +175,9 @@ def run_simulation(num_validators, num_blocks, num_txs_per_block,
             node.tick()
         
         # 3. Kiểm tra block mới được finalize
-        current_finalized = min(len(node.get_blockchain()) for node in nodes)
+        current_finalized = min(len(node.get_blockchain()) for node in nodes) - 1
         if current_finalized > blocks_finalized:
-            blocks_finalized = current_finalized - 1  # -1 for genesis
+            blocks_finalized = current_finalized
             print(f"\n{'='*80}")
             print(f"BLOCK {blocks_finalized} FINALIZED! (simulation time: {simulation_time:.3f}s)")
             print(f"{'='*80}\n")
@@ -232,18 +231,42 @@ def run_simulation(num_validators, num_blocks, num_txs_per_block,
     return nodes, all_same
 
 if __name__ == "__main__":
+    # Load configuration from config/config.json (fall back to sensible defaults)
+    config_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'config.json')
+    config = {}
+    try:
+        with open(config_path, 'r', encoding='utf-8') as cf:
+            config = json.load(cf)
+    except Exception:
+        # If config not present or invalid, fall back to defaults below
+        config = {}
+
+    # Defaults
+    cfg_num_validators = config.get('num_validators', 10)
+    cfg_num_blocks = config.get('num_blocks', 3)
+    cfg_num_txs_per_block = config.get('num_txs_per_block', 2)
+    cfg_network_delay = tuple(config.get('network_delay', [0.01, 0.05]))
+    cfg_loss_rate = config.get('loss_rate', 0.1)
+    cfg_verbose = config.get('verbose', True)
+    cfg_duplicate_rate = config.get('duplicate_rate', 0.05)
+    cfg_max_simulation_time = config.get('max_simulation_time', 10.0)
+    cfg_time_step = config.get('time_step', 1)
+
     log_txt_path = os.path.join("logs", "run_simulation_output.txt")
     with tee_output_to_file(log_txt_path):
         print(f"[run_simulation] Writing console output to {log_txt_path}")
-        
-        # Run simulation
+
+        # Run simulation with configuration values
         nodes, success = run_simulation(
-            num_validators=10,
-            num_blocks=3,
-            num_txs_per_block=2,
-            network_delay=(0.01, 0.05),
-            loss_rate=0.1,
-            verbose=True
+            num_validators=cfg_num_validators,
+            num_blocks=cfg_num_blocks,
+            num_txs_per_block=cfg_num_txs_per_block,
+            network_delay=cfg_network_delay,
+            loss_rate=cfg_loss_rate,
+            verbose=cfg_verbose,
+            duplicate_rate=cfg_duplicate_rate,
+            max_simulation_time=cfg_max_simulation_time,
+            time_step=cfg_time_step
         )
         
         # Save logs
