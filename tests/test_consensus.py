@@ -6,12 +6,44 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 
+from consensus.consensus import ConsensusEngine
 from crypto.keys import KeyPair
+from node import Logger
 from consensus.vote import Vote, VoteType, VoteCollector
 from consensus.block import Block, BlockHeader, BlockProposal
 from execution.state import State
 from execution.transaction import Transaction
 import time
+
+
+def _consensus_diagnostics(collector: VoteCollector, label: str):
+    """Print diagnostics for VoteCollector to help observe consensus state."""
+    print("\n" + "=" * 80)
+    print(f"CONSENSUS DIAGNOSTICS: {label}")
+    print("=" * 80)
+    print(f" total_validators: {collector.total_validators}")
+    # Print stored prevote/precommit maps
+    try:
+        print(" prevotes:")
+        for h, blocks in collector.prevotes.items():
+            for bh, voters in blocks.items():
+                print(f"   height={h}, block={bh[:8]}..., voters={len(voters)} -> {list(voters)[:4]}")
+        print(" precommits:")
+        for h, blocks in collector.precommits.items():
+            for bh, voters in blocks.items():
+                print(f"   height={h}, block={bh[:8]}..., voters={len(voters)} -> {list(voters)[:4]}")
+    except Exception:
+        print(" prevotes/precommits: N/A")
+    # Print simple counts per height for quick view
+    try:
+        heights = set(list(collector.prevotes.keys()) + list(collector.precommits.keys()))
+        for h in sorted(heights):
+            pv = {bh: len(v) for bh, v in collector.prevotes.get(h, {}).items()}
+            pc = {bh: len(v) for bh, v in collector.precommits.get(h, {}).items()}
+            print(f" height={h}: prevotes={pv}, precommits={pc}")
+    except Exception:
+        pass
+    print("" )
 
 def test_vote_creation_and_verification():
     """Test vote creation and signature verification"""
@@ -78,6 +110,8 @@ def test_vote_collector():
             assert not has_majority, f"False majority detected with {i+1} votes"
         else:
             assert has_majority, f"Majority not detected with {i+1} votes"
+    # Diagnostics: print collector internal state
+    _consensus_diagnostics(collector, "after_adding_prevotes")
     
     print("PASSED: Vote collector tracks majorities correctly")
     return True
@@ -249,6 +283,7 @@ def test_two_phase_voting():
     # Should have prevote majority
     assert collector.has_prevote_majority(height, block_hash), \
         "Prevote majority not reached"
+    _consensus_diagnostics(collector, "after_prevotes_two_phase")
     
     # Should not have precommit majority yet
     assert not collector.has_precommit_majority(height, block_hash), \
@@ -264,6 +299,7 @@ def test_two_phase_voting():
     # Should have precommit majority
     assert collector.has_precommit_majority(height, block_hash), \
         "Precommit majority not reached"
+    _consensus_diagnostics(collector, "after_precommits_two_phase")
     
     print("PASSED: Two-phase voting process works correctly")
     return True
@@ -300,12 +336,53 @@ def test_conflicting_votes():
     # Verify counts
     count1 = collector.get_prevote_count(height, block_hash_1)
     count2 = collector.get_prevote_count(height, block_hash_2)
+
+    # Diagnostics: show collector state after conflicting votes
+    _consensus_diagnostics(collector, "after_conflicting_votes")
     
     # Each block should have 1 vote (same validator voted for both)
     assert count1 == 1 and count2 == 1, \
         "Vote counting incorrect for conflicting votes"
     
     print("PASSED: Conflicting votes are tracked separately")
+    return True
+
+
+def test_consensus_engine_diagnostics():
+    """Create a ConsensusEngine, propose a block, and print internal diagnostics."""
+    print("\nTEST: ConsensusEngine Diagnostics")
+
+    chain_id = "test-chain"
+    num_validators = 4
+    keypairs = [KeyPair() for _ in range(num_validators)]
+    addresses = [kp.get_address() for kp in keypairs]
+
+    logger = Logger("CONSENSUS", False)
+    engine = ConsensusEngine(chain_id, keypairs[0], addresses, logger)
+
+    initial_balances = {addr: 1000 for addr in addresses}
+    engine.initialize_genesis(initial_balances)
+
+    # Propose a block (empty txs) and simulate receiving it
+    proposal = engine.propose_block([])
+    engine.receive_proposal(proposal)
+    _consensus_diagnostics(engine.vote_collector, "engine_after_receive_proposal")
+
+    # Add some external prevotes (simulate other validators)
+    for kp in keypairs[1:3]:
+        v = Vote(VoteType.PREVOTE, proposal.block.header.height,
+                 proposal.block.get_hash(), kp.get_address(), chain_id)
+        v.sign(kp)
+        engine.receive_vote(v)
+
+    _consensus_diagnostics(engine.vote_collector, "engine_after_external_prevotes")
+
+    # Verify vote counts
+    count = engine.vote_collector.get_prevote_count(proposal.block.header.height,
+                                                    proposal.block.get_hash())
+    assert count >= 2, f"Expected at least 2 prevotes, got {count}"
+
+    print("PASSED: ConsensusEngine diagnostics")
     return True
 
 def run_all_consensus_tests():
@@ -322,7 +399,8 @@ def run_all_consensus_tests():
         test_block_serialization,
         test_genesis_block_creation,
         test_two_phase_voting,
-        test_conflicting_votes
+        test_conflicting_votes,
+        test_consensus_engine_diagnostics
     ]
     
     results = []

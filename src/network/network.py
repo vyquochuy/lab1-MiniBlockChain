@@ -119,7 +119,7 @@ class UnreliableNetwork:
         if random.random() < self.loss_rate:
             self.dropped_count += 1
             self.logger.log("NETWORK", 
-                           f"✗ DROPPED {message_type} from {sender[:8]}... to {receiver[:8]}...")
+                           f"DROPPED {message_type} from {sender[:8]}... to {receiver[:8]}...")
             return
         
         # Calculate delivery time with random delay
@@ -160,7 +160,7 @@ class UnreliableNetwork:
             self.message_queue.append(duplicate_msg)
             self.duplicated_count += 1
             self.logger.log("NETWORK", 
-                           f"⚠ DUPLICATE {message_type} will be sent "
+                           f"DUPLICATE {message_type} will be sent "
                            f"(delay: {duplicate_delay:.3f}s)")
     
     def broadcast_message(self, sender: str, receivers: List[str], 

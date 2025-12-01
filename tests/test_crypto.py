@@ -11,6 +11,59 @@ from crypto.signature import SignedMessage
 from crypto.hashing import hash_data, hash_dict, hash_dict_hex
 import base64
 
+
+def _crypto_diagnostics(label: str, **kwargs):
+    """Print helpful diagnostics for crypto tests.
+
+    Accepts keyword arguments for items to display (keys, signatures, hashes, dicts).
+    """
+    print("\n" + "#" * 60)
+    print(f"CRYPTO DIAGNOSTICS: {label}")
+    print("#" * 60)
+    # Print keys
+    if "keypair" in kwargs and kwargs["keypair"] is not None:
+        kp = kwargs["keypair"]
+        try:
+            pub = kp.get_public_key_bytes()
+            print(f" public_key (base64): {base64.b64encode(pub).decode()}")
+            print(f" public_key_len: {len(pub)} bytes")
+            print(f" address: {kp.get_address()}")
+        except Exception as e:
+            print(f"  (key print error) {e}")
+
+    # Print signature bytes
+    if "signature" in kwargs and kwargs["signature"] is not None:
+        sig = kwargs["signature"]
+        try:
+            print(f" signature (base64): {base64.b64encode(sig).decode()}")
+            print(f" signature_len: {len(sig)} bytes")
+        except Exception as e:
+            print(f"  (sig print error) {e}")
+
+    # Print other string/blobs
+    if "signature_b64" in kwargs:
+        print(f" signature_b64 (provided): {kwargs['signature_b64']}")
+
+    # Print hashes
+    if "hashes" in kwargs and kwargs["hashes"]:
+        for k, v in kwargs["hashes"].items():
+            print(f" {k}: {v}")
+
+    # Print serialized dicts
+    if "dict" in kwargs and kwargs["dict"] is not None:
+        d = kwargs["dict"]
+        print(f" dict keys: {list(d.keys())}")
+        # show truncated view
+        for kk, vv in list(d.items())[:8]:
+            print(f"  {kk}: {str(vv)[:120]}")
+
+    # Print booleans / statuses
+    for k, v in kwargs.items():
+        if k in ("keypair", "signature", "hashes", "dict", "signature_b64"):
+            continue
+        print(f" {k}: {v}")
+
+
 def test_keypair_generation():
     """Test that keypairs are generated correctly"""
     print("\nTEST: KeyPair Generation")
@@ -28,7 +81,9 @@ def test_keypair_generation():
         assert len(decoded) == 32, "Public key should be 32 bytes"
     except Exception as e:
         raise AssertionError(f"Address is not valid base64: {e}")
-    
+    # Diagnostics: show key info
+    _crypto_diagnostics("keypair_generation", keypair=keypair1)
+
     print("PASSED: KeyPair generation works correctly")
     return True
 
@@ -67,7 +122,10 @@ def test_signature_verification():
         message
     )
     assert not is_valid, "Invalid signature was accepted (wrong key)"
-    
+    # Diagnostics: show signature and verification results
+    _crypto_diagnostics("signature_verification", keypair=keypair, signature=signature,
+                        verified_correct=is_valid)
+
     print("PASSED: Signature verification works correctly")
     return True
 
@@ -99,6 +157,15 @@ def test_domain_separation():
     # The two signatures should be different
     assert tx_msg.signature != vote_msg.signature, \
         "Different domains produced the same signature"
+    # Diagnostics: show both signatures and domain verification
+    _crypto_diagnostics("domain_separation",
+                        keypair=keypair,
+                        tx_signature=tx_msg.signature,
+                        vote_signature=vote_msg.signature,
+                        tx_sig_b64=base64.b64encode(tx_msg.signature).decode(),
+                        vote_sig_b64=base64.b64encode(vote_msg.signature).decode(),
+                        tx_verified=SignedMessage.from_dict(tx_msg.to_dict()).verify(keypair.get_public_key_bytes()),
+                        vote_verified=SignedMessage.from_dict(vote_msg.to_dict()).verify(keypair.get_public_key_bytes()))
     
     print("PASSED: Domain separation prevents signature reuse")
     return True
@@ -137,7 +204,13 @@ def test_deterministic_hashing():
     hash5 = hash_dict_hex(data_modified)
     assert hash1 != hash5, \
         "Different data produced same hash"
-    
+    # Diagnostics: show hashes
+    _crypto_diagnostics("deterministic_hashing", hashes={
+        "hash1": hash1,
+        "hash4": hash4,
+        "hash5": hash5
+    })
+
     print("PASSED: Hashing is deterministic and collision-resistant")
     return True
 
@@ -198,7 +271,13 @@ def test_serialization():
     # Verify signature still valid
     is_valid = restored.verify(keypair.get_public_key_bytes())
     assert is_valid, "Deserialized signature is invalid"
-    
+    # Diagnostics: show serialized dict and signature b64
+    _crypto_diagnostics("serialization",
+                        keypair=keypair,
+                        dict=serialized,
+                        signature=original.signature,
+                        signature_b64=base64.b64encode(original.signature).decode())
+
     print("PASSED: Message serialization preserves integrity")
     return True
 
@@ -224,7 +303,13 @@ def test_tamper_detection():
     # Verification should fail
     is_valid = msg.verify(keypair.get_public_key_bytes())
     assert not is_valid, "Tampered data was not detected"
-    
+    # Diagnostics: show original and tampered signature/verification
+    _crypto_diagnostics("tamper_detection",
+                        keypair=keypair,
+                        original_signature=original_signature,
+                        tampered_signature=msg.signature,
+                        original_sig_b64=base64.b64encode(original_signature).decode())
+
     print("PASSED: Data tampering is detected")
     return True
 

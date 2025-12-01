@@ -6,11 +6,13 @@ import sys
 import os
 import time
 import json
+import random
 from crypto.keys import KeyPair
 from contextlib import contextmanager
 from node import BlockchainNode, Logger
 from network.network import UnreliableNetwork
 
+random.seed(0)
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
 
@@ -132,8 +134,8 @@ def run_simulation(num_validators, num_blocks, num_txs_per_block,
     max_iterations = 10000
     max_simulation_time = 10.0  # Tối đa 10s simulation time
     
-    # Time step cho mỗi iteration (simulation time, không phải real time)
-    time_step = 0.1  # 100ms simulation time mỗi iteration
+    # Time step cho mỗi iteration (simulation time)
+    time_step = 1  # 100ms simulation time mỗi iteration
     
     print("Starting continuous network simulation...")
     print("Network and Nodes will process events continuously\n")

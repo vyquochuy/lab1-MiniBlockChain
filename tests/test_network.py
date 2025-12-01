@@ -78,29 +78,33 @@ def test_message_delays():
 def test_packet_loss():
     """Test that packets are lost at specified rate"""
     print("\nTEST: Packet Loss")
-    
+    CONFIG = {
+        'loss_rate': 0.5, 'delay_range': (0.001, 0.01), 'duplicate_rate': 0.0,
+        'enable_delays': False, 'num_messages': 100
+    }
+    print("--- NETWORK CONFIG ---")
+    for k, v in CONFIG.items():
+        print(f"  {k}: {v}")
     logger = Logger("test", verbose=False)
     network = UnreliableNetwork(
         logger,
-        delay_range=(0.001, 0.01),
-        loss_rate=0.5,  # 50% loss rate
-        duplicate_rate=0.0,
-        enable_delays=False
+        delay_range=CONFIG['delay_range'],
+        loss_rate=CONFIG['loss_rate'],
+        duplicate_rate=CONFIG['duplicate_rate'],
+        enable_delays=CONFIG['enable_delays']
     )
-    
     # Send many messages
-    num_messages = 100
-    for i in range(num_messages):
+    for i in range(CONFIG['num_messages']):
         network.send_message("alice", "bob", "TEST", {"seq": i})
-    
-    # Check stats
     stats = network.get_stats()
-    loss_rate = stats['dropped'] / num_messages
-    
-    # Should be approximately 50% loss (within reasonable margin)
+    loss_rate = stats['dropped'] / CONFIG['num_messages']
+    print("--- NETWORK STATS ---")
+    for k, v in stats.items():
+        print(f"  {k}: {v}")
+    print(f"  Calculated loss rate: {loss_rate:.2%} (expected ~50%)")
+    # Should be approximately 50% loss (within margin)
     assert 0.3 < loss_rate < 0.7, \
         f"Loss rate {loss_rate} not close to expected 0.5"
-    
     print(f"PASSED: Packet loss rate: {loss_rate:.2%}")
     return True
 
@@ -210,36 +214,36 @@ def test_message_reordering():
 def test_network_stats():
     """Test network statistics tracking"""
     print("\nTEST: Network Statistics")
-    
+    CONFIG = {
+        'delay_range': (0.001, 0.01), 'loss_rate': 0.2, 'duplicate_rate': 0.1,
+        'enable_delays': False, 'num_messages': 50
+    }
+    print("--- NETWORK CONFIG ---")
+    for k, v in CONFIG.items():
+        print(f"  {k}: {v}")
     logger = Logger("test", verbose=False)
     network = UnreliableNetwork(
         logger,
-        delay_range=(0.001, 0.01),
-        loss_rate=0.2,
-        duplicate_rate=0.1,
-        enable_delays=False
+        delay_range=CONFIG['delay_range'],
+        loss_rate=CONFIG['loss_rate'],
+        duplicate_rate=CONFIG['duplicate_rate'],
+        enable_delays=CONFIG['enable_delays']
     )
-    
     # Send messages
-    for i in range(50):
+    for i in range(CONFIG['num_messages']):
         network.send_message("alice", "bob", "TEST", {"seq": i})
-    
     # Advance simulation time và deliver
     network.tick(0.02)
     messages = network.deliver_ready_messages()
-    
-    # Get stats
     stats = network.get_stats()
-    
+    print("--- NETWORK STATS ---")
+    for k, v in stats.items():
+        print(f"  {k}: {v}")
     # Verify stats are reasonable
     assert stats['delivered'] > 0, "No messages delivered"
     assert stats['dropped'] > 0, "No messages dropped (with 20% loss rate)"
-    assert stats['delivered'] + stats['dropped'] >= 50, \
+    assert stats['delivered'] + stats['dropped'] >= CONFIG['num_messages'], \
         "Total messages don't match sent count"
-    
-    print(f"   Delivered: {stats['delivered']}, "
-          f"Dropped: {stats['dropped']}, "
-          f"Duplicated: {stats['duplicated']}")
     print("PASSED: Network statistics tracked correctly")
     return True
 
@@ -400,31 +404,33 @@ def test_rate_limit_multiple_senders():
 def test_rate_limit_stats():
     """Test that rate limiting statistics are tracked correctly"""
     print("\nTEST: Rate Limiting - Statistics Tracking")
-    
+    CONFIG = {
+        'delay_range': (0.001, 0.01), 'loss_rate': 0.0, 'duplicate_rate': 0.0,
+        'enable_delays': False, 'num_messages': 150
+    }
+    print("--- NETWORK CONFIG ---")
+    for k, v in CONFIG.items():
+        print(f"  {k}: {v}")
     logger = Logger("test", verbose=False)
     network = UnreliableNetwork(
         logger,
-        delay_range=(0.001, 0.01),
-        loss_rate=0.0,
-        duplicate_rate=0.0,
-        enable_delays=False
+        delay_range=CONFIG['delay_range'],
+        loss_rate=CONFIG['loss_rate'],
+        duplicate_rate=CONFIG['duplicate_rate'],
+        enable_delays=CONFIG['enable_delays']
     )
-    
     # Send messages to trigger rate limiting
-    for i in range(150):
+    for i in range(CONFIG['num_messages']):
         network.send_message("alice", "bob", "TEST", {"seq": i})
-    
     stats = network.get_stats()
-    
+    print("--- NETWORK STATS ---")
+    for k, v in stats.items():
+        print(f"  {k}: {v}")
     # Check that stats include rate limiting info
-    assert "blocked_peers" in stats, \
-        "Stats should include blocked_peers count"
-    assert "rate_limited_drops" in stats, \
-        "Stats should include rate_limited_drops count"
-    
+    assert "blocked_peers" in stats, "Stats should include blocked_peers count"
+    assert "rate_limited_drops" in stats, "Stats should include rate_limited_drops count"
     assert stats["blocked_peers"] >= 1, \
         f"Should have at least 1 blocked peer, got {stats['blocked_peers']}"
-    
     print(f"   Blocked peers: {stats['blocked_peers']}")
     print(f"   Rate limited drops: {stats.get('rate_limited_drops', 'N/A')}")
     print(f"   Total dropped: {stats['dropped']}")
@@ -434,18 +440,19 @@ def test_rate_limit_stats():
 def test_header_body_separation_basic():
     """Test basic header/body separation in block proposals"""
     print("\nTEST: Header/Body Separation - Basic Functionality")
-    
-    chain_id = "test-chain"
-    validators = [KeyPair() for _ in range(3)]
+    CONFIG = {
+        'chain_id': 'test-chain', 'num_validators': 3, 'tx_amount': 50
+    }
+    print("--- TEST CONFIG ---")
+    for k, v in CONFIG.items(): print(f"  {k}: {v}")
+    chain_id = CONFIG['chain_id']
+    validators = [KeyPair() for _ in range(CONFIG['num_validators'])]
     validator_addresses = [v.get_address() for v in validators]
-    
     logger = Logger("NETWORK", verbose=False)
     network = UnreliableNetwork(logger, enable_delays=False, loss_rate=0.0)
-    
     # Create nodes
     nodes = []
     initial_balances = {}
-    
     for i, keypair in enumerate(validators):
         node = BlockchainNode(
             node_id=f"node-{i}",
@@ -457,22 +464,17 @@ def test_header_body_separation_basic():
         )
         nodes.append(node)
         initial_balances[node.address] = 1000
-    
     validator_addresses = [n.address for n in nodes]
     for node in nodes:
         node.all_validators = validator_addresses
         node.consensus.all_validators = validator_addresses
         node.initialize_genesis(initial_balances)
-    
     # Node 0 is leader at height 1, submit transaction
-    tx = nodes[0].create_transaction(nodes[1].address, 50)
+    tx = nodes[0].create_transaction(nodes[1].address, CONFIG['tx_amount'])
     nodes[0].submit_transaction(tx)
-    
     # Run one tick - leader should have header/body tracking
     network.tick(0.01)
-    for node in nodes:
-        node.tick()
-    
+    for node in nodes: node.tick()
     # Check that leader (node 0) has tracking structures
     assert hasattr(nodes[0], 'pending_block_bodies'), \
         "Node should have pending_block_bodies attribute"
@@ -480,13 +482,15 @@ def test_header_body_separation_basic():
         "Node should have accepted_headers attribute"
     assert hasattr(nodes[0], 'requested_bodies'), \
         "Node should have requested_bodies attribute"
-    
     # Leader should have stored the body
-    assert len(nodes[0].pending_block_bodies) > 0, \
-        "Leader should have stored block body"
-    
+    actual_bodies = len(nodes[0].pending_block_bodies)
+    print("--- NODE[0] HEADER/BODY STATS ---")
+    print(f"  pending_block_bodies: {actual_bodies}")
+    print(f"  accepted_headers: {len(getattr(nodes[0], 'accepted_headers', []))}")
+    print(f"  requested_bodies: {len(getattr(nodes[0], 'requested_bodies', []))}")
+    assert actual_bodies > 0, "Leader should have stored block body"
     print("   Leader has header/body separation structures")
-    print(f"   Pending block bodies: {len(nodes[0].pending_block_bodies)}")
+    print(f"   Pending block bodies: {actual_bodies}")
     print("PASSED: Basic header/body separation structures exist")
     return True
 

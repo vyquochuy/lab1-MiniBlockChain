@@ -11,6 +11,46 @@ from network.network import UnreliableNetwork
 from node import BlockchainNode, Logger
 import time
 
+
+def _log_diagnostics(nodes, network, label: str, tick: int = None):
+    """Print helpful diagnostics about network and nodes for debugging."""
+    header = f"DIAGNOSTICS: {label}"
+    if tick is not None:
+        header += f" @ tick={tick}"
+    print("\n" + "-" * 80)
+    print(header)
+    print("-" * 80)
+
+    # Network stats
+    try:
+        stats = network.get_stats()
+    except Exception:
+        stats = {}
+
+    print("Network stats:")
+    print(f"  simulation_time: {stats.get('simulation_time')}")
+    print(f"  delivered: {stats.get('delivered')}")
+    print(f"  dropped: {stats.get('dropped')}")
+    print(f"  duplicated: {stats.get('duplicated')}")
+    print(f"  pending (message_queue): {stats.get('pending')}")
+    print(f"  in_inboxes: {stats.get('in_inboxes')}")
+    print(f"  blocked_peers: {stats.get('blocked_peers')}")
+    print(f"  rate_limited_drops: {stats.get('rate_limited_drops', stats.get('rate_limit_drops'))}")
+
+    # Per-node stats
+    print("\nNode states:")
+    for i, node in enumerate(nodes):
+        chain_len = len(node.get_blockchain())
+        current_height = node.consensus.current_height
+        tx_pool = len(node.tx_pool)
+        last_block_hash = None
+        if chain_len > 0:
+            last_block_hash = node.get_blockchain()[-1].get_hash()[:16]
+        prevoted = len(node.consensus.prevoted)
+        precommitted = len(node.consensus.precommitted)
+        print(f"  Node[{i}] {node.address[:8]}...: chain_len={chain_len}, height={current_height}, tx_pool={tx_pool}, last_block={last_block_hash}, prevoted={prevoted}, precommitted={precommitted}")
+
+
 def test_single_block_finalization():
     """Test that a single block can be finalized"""
     print("\n" + "="*80)
@@ -60,13 +100,17 @@ def test_single_block_finalization():
     nodes[0].submit_transaction(tx)
     
     # Run consensus
-    for _ in range(100):
+    for t in range(100):
         # Network tick: advance time và deliver messages
         network.tick(0.01)
-        
+
         # Node tick: xử lý messages và events
         for node in nodes:
             node.tick()
+
+        # Periodic diagnostics to observe behavior
+        if t % 20 == 0:
+            _log_diagnostics(nodes, network, "single_block_running", t)
     
     # Verify
     finalized_count = len(nodes[0].get_blockchain())
@@ -129,10 +173,14 @@ def test_no_double_finalization():
     for _ in range(200):
         # Network tick: advance time và deliver messages
         network.tick(0.01)
-        
+
         # Node tick: xử lý messages và events
         for node in nodes:
             node.tick()
+
+        # Periodic diagnostics for long-run test
+        if _ % 50 == 0:
+            _log_diagnostics(nodes, network, "no_double_finalization_running", _)
     
     # Check that all nodes have same blocks at each height
     for height in range(min(len(node.get_blockchain()) for node in nodes)):

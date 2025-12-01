@@ -11,6 +11,34 @@ from execution.state import State
 from execution.transaction import Transaction
 from execution.executor import Executor
 
+
+def _exec_diagnostics(label: str, state: State = None, executor: Executor = None,
+                      transactions=None, executed=None, last_error: str = None):
+    print("\n" + "~" * 60)
+    print(f"EXECUTION DIAGNOSTICS: {label}")
+    print("~" * 60)
+    if state is not None:
+        try:
+            d = state.to_dict()
+            print(f" state_hash: {state.get_hash()}")
+            # show balances only
+            balances = {k[len('balance:'):]: v for k, v in d.items() if k.startswith('balance:')}
+            print(f" balances: {balances}")
+        except Exception as e:
+            print(f" state: (error reading) {e}")
+    if executor is not None:
+        try:
+            print(f" processed_nonces: {getattr(executor, 'processed_nonces', {})}")
+        except Exception as e:
+            print(f" executor: (error reading) {e}")
+    if transactions is not None:
+        print(f" transactions_count: {len(transactions)}")
+    if executed is not None:
+        print(f" executed: {executed}")
+    if last_error is not None:
+        print(f" last_error: {last_error}")
+    print("")
+
 def test_state_operations():
     """Test basic state operations"""
     print("\nTEST: State Operations")
@@ -27,6 +55,7 @@ def test_state_operations():
     # Has key
     assert state.has("key1"), "Has key check failed"
     assert not state.has("nonexistent"), "Has key false positive"
+    _exec_diagnostics("state_operations", state=state)
     
     print("PASSED: State operations work correctly")
     return True
@@ -54,7 +83,8 @@ def test_balance_operations():
     # Transfer with insufficient balance
     success = state.transfer("bob", "alice", 1000)
     assert not success, "Transfer with insufficient balance succeeded"
-    
+    _exec_diagnostics("balance_operations", state=state)
+
     print("PASSED: Balance operations work correctly")
     return True
 
@@ -91,7 +121,8 @@ def test_state_hash_determinism():
     
     hash4 = state4.get_hash()
     assert hash1 != hash4, "Different states produced same hash"
-    
+    _exec_diagnostics("state_hash_determinism", state=state1)
+
     print("PASSED: State hashing is deterministic")
     return True
 
@@ -118,7 +149,8 @@ def test_transaction_creation():
     # Verify transaction
     is_valid = tx.verify()
     assert is_valid, "Valid transaction rejected"
-    
+    _exec_diagnostics("transaction_creation", transactions=[tx])
+
     print("PASSED: Transaction creation works correctly")
     return True
 
@@ -152,7 +184,8 @@ def test_transaction_nonce():
     
     success, error = executor.execute_transaction(state, tx2)
     assert success, f"Valid transaction failed: {error}"
-    
+    _exec_diagnostics("transaction_nonce", state=state, executor=executor)
+
     print("PASSED: Nonce prevents replay attacks")
     return True
 
@@ -174,7 +207,8 @@ def test_transaction_signature_validation():
     # Tamper with signature
     tx.signature = keypair2.sign(b"different_data")
     assert not tx.verify(), "Invalid signature accepted"
-    
+    _exec_diagnostics("transaction_signature_validation")
+
     print("PASSED: Invalid signatures are rejected")
     return True
 
@@ -215,7 +249,9 @@ def test_executor_determinism():
     # Results should be identical
     assert hash1 == hash2, "Executor produced different results"
     assert executed1 == executed2, "Different transactions executed"
-    
+    _exec_diagnostics("executor_determinism", state=new_state1, executor=executor1,
+                      transactions=transactions, executed=executed1)
+
     print("PASSED: Executor is deterministic")
     return True
 
@@ -242,7 +278,8 @@ def test_insufficient_balance():
     # Balance should remain unchanged
     assert state.get_balance(keypair.get_address()) == 50, \
         "Balance changed despite failed transaction"
-    
+    _exec_diagnostics("insufficient_balance", state=state, executor=executor, last_error=error)
+
     print("PASSED: Insufficient balance is checked")
     return True
 
@@ -267,7 +304,9 @@ def test_state_isolation():
     # Copy should have modifications
     assert copy.get_balance("alice") == 2000, "Copy not modified correctly"
     assert copy.get_balance("bob") == 500, "Copy not modified correctly"
-    
+    _exec_diagnostics("state_isolation_original", state=original)
+    _exec_diagnostics("state_isolation_copy", state=copy)
+
     print("PASSED: State copies are isolated")
     return True
 
@@ -302,7 +341,8 @@ def test_transaction_ordering():
     assert new_state.get_balance(alice_addr) == 200, "Alice balance incorrect"
     assert new_state.get_balance(bob_addr) == 800, "Bob balance incorrect"
     assert len(executed) == 2, "Not all transactions executed"
-    
+    _exec_diagnostics("transaction_ordering", state=new_state, executor=executor, executed=executed)
+
     print("PASSED: Transaction ordering is respected")
     return True
 
